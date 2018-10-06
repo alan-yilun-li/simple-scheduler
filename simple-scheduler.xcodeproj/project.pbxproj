@@ -15,6 +15,9 @@
 		E71B86EC21693A25007CB3FC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E71B86EA21693A25007CB3FC /* LaunchScreen.storyboard */; };
 		E71B86F421693BA3007CB3FC /* UserDefaults+Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71B86F321693BA3007CB3FC /* UserDefaults+Keys.swift */; };
 		E71B86FA21693C9D007CB3FC /* AYLTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71B86F921693C9D007CB3FC /* AYLTheme.swift */; };
+		E77C584A21695C700028D1B6 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77C584921695C700028D1B6 /* TestViewController.swift */; };
+		E77C584D216962760028D1B6 /* HitTestButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77C584C216962760028D1B6 /* HitTestButton.swift */; };
+		E77C5850216969F20028D1B6 /* CleanPushTransitionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77C584F216969F20028D1B6 /* CleanPushTransitionAnimator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +31,9 @@
 		E71B86ED21693A25007CB3FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E71B86F321693BA3007CB3FC /* UserDefaults+Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Keys.swift"; sourceTree = "<group>"; };
 		E71B86F921693C9D007CB3FC /* AYLTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AYLTheme.swift; sourceTree = "<group>"; };
+		E77C584921695C700028D1B6 /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
+		E77C584C216962760028D1B6 /* HitTestButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HitTestButton.swift; sourceTree = "<group>"; };
+		E77C584F216969F20028D1B6 /* CleanPushTransitionAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanPushTransitionAnimator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +50,7 @@
 		E71675D0216947F5004BA952 /* Page1 */ = {
 			isa = PBXGroup;
 			children = (
+				E71B86E321693A20007CB3FC /* OnboardingRootController.swift */,
 			);
 			path = Page1;
 			sourceTree = "<group>";
@@ -90,6 +97,7 @@
 		E71B86F621693BAF007CB3FC /* Feature Modules */ = {
 			isa = PBXGroup;
 			children = (
+				E77C584821695C550028D1B6 /* Main */,
 				E71B86F721693BB7007CB3FC /* Onboarding */,
 			);
 			path = "Feature Modules";
@@ -99,7 +107,6 @@
 			isa = PBXGroup;
 			children = (
 				E71675D0216947F5004BA952 /* Page1 */,
-				E71B86E321693A20007CB3FC /* OnboardingRootController.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -107,10 +114,36 @@
 		E71B86F821693C3E007CB3FC /* Base UI */ = {
 			isa = PBXGroup;
 			children = (
+				E77C584E216969D60028D1B6 /* Animation */,
+				E77C584B216962580028D1B6 /* Views */,
 				E71B86F921693C9D007CB3FC /* AYLTheme.swift */,
 				E71675D3216949A1004BA952 /* StringStore.swift */,
 			);
 			path = "Base UI";
+			sourceTree = "<group>";
+		};
+		E77C584821695C550028D1B6 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				E77C584921695C700028D1B6 /* TestViewController.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		E77C584B216962580028D1B6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E77C584C216962760028D1B6 /* HitTestButton.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E77C584E216969D60028D1B6 /* Animation */ = {
+			isa = PBXGroup;
+			children = (
+				E77C584F216969F20028D1B6 /* CleanPushTransitionAnimator.swift */,
+			);
+			path = Animation;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -186,9 +219,12 @@
 				E71675D4216949A1004BA952 /* StringStore.swift in Sources */,
 				E71B86F421693BA3007CB3FC /* UserDefaults+Keys.swift in Sources */,
 				E71B86E421693A20007CB3FC /* OnboardingRootController.swift in Sources */,
+				E77C5850216969F20028D1B6 /* CleanPushTransitionAnimator.swift in Sources */,
 				E71B86FA21693C9D007CB3FC /* AYLTheme.swift in Sources */,
 				E71B86E221693A20007CB3FC /* AppDelegate.swift in Sources */,
 				E71675D22169480D004BA952 /* AYLDependencies.swift in Sources */,
+				E77C584A21695C700028D1B6 /* TestViewController.swift in Sources */,
+				E77C584D216962760028D1B6 /* HitTestButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

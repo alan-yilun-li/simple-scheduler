@@ -12,7 +12,7 @@ class OnboardingRootController: UIViewController {
     
     private struct Constants {
         static let defaultSpacing: CGFloat = 16.0
-        static let continueArrowSpacing: CGFloat = 2.0
+        static let continueArrowSpacing: CGFloat = 1.0
     }
     
     private let dependencies: AYLDependencies
@@ -23,8 +23,14 @@ class OnboardingRootController: UIViewController {
     private lazy var simpleLabel = makeTitleComponent(StringStore.simple)
     private lazy var schedulerLabel = makeTitleComponent(StringStore.scheduler)
     
-    private lazy var continueButton = makeContinueButtonComponent(StringStore.continue)
-    private lazy var continueArrow = makeContinueButtonComponent(">")
+    private lazy var continueArrow: HitTestButton = {
+        let button = HitTestButton(type: .system)
+        button.setTitleColor(theme.colours.mainTextColor, for: .normal)
+        button.titleLabel?.font = theme.fonts.mainTitle
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle(">", for: .normal)
+        return button
+    }()
     
     init(_ dependencies: AYLDependencies) {
         self.dependencies = dependencies
@@ -37,9 +43,26 @@ class OnboardingRootController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupViews()
         setupConstraints()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        updateContinueHitTest(forSize: view.frame.size)
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        updateContinueHitTest(forSize: size)
+    }
+}
+
+// MARK: - Actions
+extension OnboardingRootController {
+    
+    @objc func continueButtonPressed() {
+        navigationController?.pushViewController(TestViewController(nibName: nil, bundle: nil), animated: true)
     }
 }
 
@@ -51,10 +74,9 @@ private extension OnboardingRootController {
         
         view.addSubview(simpleLabel)
         view.addSubview(schedulerLabel)
-        view.addSubview(continueButton)
         view.addSubview(continueArrow)
         
-        
+        continueArrow.addTarget(self, action: #selector(continueButtonPressed), for: .touchUpInside)
     }
     
     func setupConstraints() {
@@ -79,22 +101,21 @@ private extension OnboardingRootController {
             ),
             
             // Continue Button Constraints
-            continueButton.bottomAnchor.constraint(
+            continueArrow.bottomAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.bottomAnchor,
-                constant: -Constants.defaultSpacing * 2 
+                constant: -Constants.defaultSpacing * 2
             ),
-            continueButton.topAnchor.constraint(
+            continueArrow.topAnchor.constraint(
                 greaterThanOrEqualTo: schedulerLabel.bottomAnchor,
                 constant: Constants.defaultSpacing
             ),
-            
-            continueArrow.centerYAnchor.constraint(equalTo: continueButton.centerYAnchor),
-            continueArrow.leadingAnchor.constraint(
-                equalTo: continueButton.trailingAnchor,
-                constant: Constants.continueArrowSpacing
-            ),
             continueArrow.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor)
         ])
+    }
+    
+    func updateContinueHitTest(forSize size: CGSize) {
+        let origin = continueArrow.convert(CGPoint.zero, to: continueArrow.superview!)
+        continueArrow.hitArea = CGRect(x: -origin.x, y: -origin.y, width: size.width, height: size.height)
     }
     
     func makeTitleComponent(_ text: String) -> UILabel {
@@ -105,14 +126,5 @@ private extension OnboardingRootController {
         label.textColor = theme.colours.mainTextColor
         label.adjustsFontForContentSizeCategory = true
         return label
-    }
-    
-    func makeContinueButtonComponent(_ text: String) -> UIButton {
-        let button = UIButton(type: .system)
-        button.setTitleColor(theme.colours.mainTextColor, for: .normal)
-        button.titleLabel?.font = theme.fonts.standard
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle(text, for: .normal)
-        return button
     }
 }

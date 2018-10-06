@@ -19,8 +19,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if UserDefaults.standard.userShouldOnboard {
             let rootViewController = OnboardingRootController(dependencies)
+            let navController = UINavigationController(rootViewController: rootViewController)
+            navController.setNavigationBarHidden(true, animated: false)
+            
             window = UIWindow(frame: UIScreen.main.bounds)
-            window?.rootViewController = rootViewController
+            window?.rootViewController = navController
             window?.makeKeyAndVisible()
         } else {
             

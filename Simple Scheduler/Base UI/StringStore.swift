@@ -12,5 +12,4 @@ struct StringStore {
     
     static let simple = NSLocalizedString("Simple", comment: "simple")
     static let scheduler = NSLocalizedString("Scheduler", comment: "scheduler")
-    static let `continue` = NSLocalizedString("continue", comment: "continue")
 }
