@@ -8,20 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		E71B86E221693A20007CB3FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71B86E121693A20007CB3FC /* AppDelegate.swift */; };
-		E71B86E421693A20007CB3FC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71B86E321693A20007CB3FC /* ViewController.swift */; };
-		E71B86E721693A20007CB3FC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E71B86E521693A20007CB3FC /* Main.storyboard */; };
+		E71B86E421693A20007CB3FC /* OnboardingRootController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71B86E321693A20007CB3FC /* OnboardingRootController.swift */; };
 		E71B86E921693A25007CB3FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E71B86E821693A25007CB3FC /* Assets.xcassets */; };
 		E71B86EC21693A25007CB3FC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E71B86EA21693A25007CB3FC /* LaunchScreen.storyboard */; };
+		E71B86F421693BA3007CB3FC /* UserDefaults+Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71B86F321693BA3007CB3FC /* UserDefaults+Keys.swift */; };
+		E71B86FA21693C9D007CB3FC /* AYLTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71B86F921693C9D007CB3FC /* AYLTheme.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		E71B86DE21693A20007CB3FC /* Simple Scheduler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Simple Scheduler.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E71B86E121693A20007CB3FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		E71B86E321693A20007CB3FC /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		E71B86E621693A20007CB3FC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		E71B86E321693A20007CB3FC /* OnboardingRootController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingRootController.swift; sourceTree = "<group>"; };
 		E71B86E821693A25007CB3FC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E71B86EB21693A25007CB3FC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E71B86ED21693A25007CB3FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E71B86F321693BA3007CB3FC /* UserDefaults+Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Keys.swift"; sourceTree = "<group>"; };
+		E71B86F921693C9D007CB3FC /* AYLTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AYLTheme.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,14 +56,47 @@
 		E71B86E021693A20007CB3FC /* Simple Scheduler */ = {
 			isa = PBXGroup;
 			children = (
+				E71B86F821693C3E007CB3FC /* Base UI  */,
+				E71B86F621693BAF007CB3FC /* Feature Modules */,
+				E71B86F521693BA9007CB3FC /* Extensions */,
 				E71B86E121693A20007CB3FC /* AppDelegate.swift */,
-				E71B86E321693A20007CB3FC /* ViewController.swift */,
-				E71B86E521693A20007CB3FC /* Main.storyboard */,
+				E71B86E321693A20007CB3FC /* OnboardingRootController.swift */,
 				E71B86E821693A25007CB3FC /* Assets.xcassets */,
 				E71B86EA21693A25007CB3FC /* LaunchScreen.storyboard */,
 				E71B86ED21693A25007CB3FC /* Info.plist */,
 			);
 			path = "Simple Scheduler";
+			sourceTree = "<group>";
+		};
+		E71B86F521693BA9007CB3FC /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				E71B86F321693BA3007CB3FC /* UserDefaults+Keys.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		E71B86F621693BAF007CB3FC /* Feature Modules */ = {
+			isa = PBXGroup;
+			children = (
+				E71B86F721693BB7007CB3FC /* Onboarding */,
+			);
+			path = "Feature Modules";
+			sourceTree = "<group>";
+		};
+		E71B86F721693BB7007CB3FC /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		E71B86F821693C3E007CB3FC /* Base UI  */ = {
+			isa = PBXGroup;
+			children = (
+				E71B86F921693C9D007CB3FC /* AYLTheme.swift */,
+			);
+			path = "Base UI ";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -99,7 +134,7 @@
 					};
 				};
 			};
-			buildConfigurationList = E71B86D921693A20007CB3FC /* Build configuration list for PBXProject "Simple Scheduler" */;
+			buildConfigurationList = E71B86D921693A20007CB3FC /* Build configuration list for PBXProject "simple-scheduler" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -124,7 +159,6 @@
 			files = (
 				E71B86EC21693A25007CB3FC /* LaunchScreen.storyboard in Resources */,
 				E71B86E921693A25007CB3FC /* Assets.xcassets in Resources */,
-				E71B86E721693A20007CB3FC /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,7 +169,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E71B86E421693A20007CB3FC /* ViewController.swift in Sources */,
+				E71B86F421693BA3007CB3FC /* UserDefaults+Keys.swift in Sources */,
+				E71B86E421693A20007CB3FC /* OnboardingRootController.swift in Sources */,
+				E71B86FA21693C9D007CB3FC /* AYLTheme.swift in Sources */,
 				E71B86E221693A20007CB3FC /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -143,14 +179,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		E71B86E521693A20007CB3FC /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				E71B86E621693A20007CB3FC /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		E71B86EA21693A25007CB3FC /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -283,6 +311,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3L34B92962;
 				INFOPLIST_FILE = "Simple Scheduler/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -301,6 +330,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3L34B92962;
 				INFOPLIST_FILE = "Simple Scheduler/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -315,7 +345,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		E71B86D921693A20007CB3FC /* Build configuration list for PBXProject "Simple Scheduler" */ = {
+		E71B86D921693A20007CB3FC /* Build configuration list for PBXProject "simple-scheduler" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E71B86EE21693A25007CB3FC /* Debug */,
