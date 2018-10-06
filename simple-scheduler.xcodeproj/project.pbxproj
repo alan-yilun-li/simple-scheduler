@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E71675D22169480D004BA952 /* AYLDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71675D12169480D004BA952 /* AYLDependencies.swift */; };
+		E71675D4216949A1004BA952 /* StringStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71675D3216949A1004BA952 /* StringStore.swift */; };
 		E71B86E221693A20007CB3FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71B86E121693A20007CB3FC /* AppDelegate.swift */; };
 		E71B86E421693A20007CB3FC /* OnboardingRootController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71B86E321693A20007CB3FC /* OnboardingRootController.swift */; };
 		E71B86E921693A25007CB3FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E71B86E821693A25007CB3FC /* Assets.xcassets */; };
@@ -16,6 +18,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E71675D12169480D004BA952 /* AYLDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AYLDependencies.swift; sourceTree = "<group>"; };
+		E71675D3216949A1004BA952 /* StringStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringStore.swift; sourceTree = "<group>"; };
 		E71B86DE21693A20007CB3FC /* Simple Scheduler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Simple Scheduler.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E71B86E121693A20007CB3FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E71B86E321693A20007CB3FC /* OnboardingRootController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingRootController.swift; sourceTree = "<group>"; };
@@ -37,6 +41,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E71675D0216947F5004BA952 /* Page1 */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Page1;
+			sourceTree = "<group>";
+		};
 		E71B86D521693A20007CB3FC = {
 			isa = PBXGroup;
 			children = (
@@ -60,7 +71,7 @@
 				E71B86F621693BAF007CB3FC /* Feature Modules */,
 				E71B86F521693BA9007CB3FC /* Extensions */,
 				E71B86E121693A20007CB3FC /* AppDelegate.swift */,
-				E71B86E321693A20007CB3FC /* OnboardingRootController.swift */,
+				E71675D12169480D004BA952 /* AYLDependencies.swift */,
 				E71B86E821693A25007CB3FC /* Assets.xcassets */,
 				E71B86EA21693A25007CB3FC /* LaunchScreen.storyboard */,
 				E71B86ED21693A25007CB3FC /* Info.plist */,
@@ -87,6 +98,8 @@
 		E71B86F721693BB7007CB3FC /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
+				E71675D0216947F5004BA952 /* Page1 */,
+				E71B86E321693A20007CB3FC /* OnboardingRootController.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -95,6 +108,7 @@
 			isa = PBXGroup;
 			children = (
 				E71B86F921693C9D007CB3FC /* AYLTheme.swift */,
+				E71675D3216949A1004BA952 /* StringStore.swift */,
 			);
 			path = "Base UI ";
 			sourceTree = "<group>";
@@ -169,10 +183,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E71675D4216949A1004BA952 /* StringStore.swift in Sources */,
 				E71B86F421693BA3007CB3FC /* UserDefaults+Keys.swift in Sources */,
 				E71B86E421693A20007CB3FC /* OnboardingRootController.swift in Sources */,
 				E71B86FA21693C9D007CB3FC /* AYLTheme.swift in Sources */,
 				E71B86E221693A20007CB3FC /* AppDelegate.swift in Sources */,
+				E71675D22169480D004BA952 /* AYLDependencies.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

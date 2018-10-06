@@ -14,12 +14,18 @@ enum AYLTheme: Int {
     
     struct FontSize {
         static let big: CGFloat = 24
-        static let body: CGFloat
+        static let body: CGFloat = 16
     }
     
     var mainColor: UIColor {
         switch self {
         case .standard: return Colours.aylWhite
+        }
+    }
+    
+    var mainTextColor: UIColor {
+        switch self {
+        case .standard: return Colours.aylBlack
         }
     }
     
@@ -29,9 +35,9 @@ enum AYLTheme: Int {
         }
     }
     
-    var mainFont: UIFont {
+    var mainTitleFont: UIFont {
         switch self {
-        case .standard: return Fonts.standard
+        case .standard: return Fonts.getDynamicFont(withName: Fonts.standardFontName, size: FontSize.big)
         }
     }
 }
@@ -44,14 +50,15 @@ private struct Colours {
 
 private struct Fonts {
 
-    static let standard: UIFont = getDynamicFont(withName: "Futura-Medium")
+    static let standardFontName = "Futura-Medium"
 
     /// Returns font vended through UIFontMetrics.
     /// - Note: Requires the control to set adjustsFontForContentSizeCategory to enable dynamism
-    private func getDynamicFont(withName name: String) -> UIFont {
-        guard let font = UIFont(name: name, size: UIFont.labelFontSize) else {
+    static func getDynamicFont(withName name: String, size: CGFloat) -> UIFont {
+        guard let font = UIFont(name: name, size: size) else {
             assertionFailure("\(name) font not loaded")
-            return UIFontMetrics.default.scaledFont(for: UIFont.systemFont(ofSize: UIFont.labelFontSize))
+            return UIFontMetrics.default.scaledFont(
+                for: UIFont.systemFont(ofSize: UIFont.labelFontSize))
         }
         return UIFontMetrics.default.scaledFont(for: font)
     }
