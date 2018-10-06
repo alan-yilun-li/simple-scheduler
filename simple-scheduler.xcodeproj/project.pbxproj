@@ -67,7 +67,7 @@
 		E71B86E021693A20007CB3FC /* Simple Scheduler */ = {
 			isa = PBXGroup;
 			children = (
-				E71B86F821693C3E007CB3FC /* Base UI  */,
+				E71B86F821693C3E007CB3FC /* Base UI */,
 				E71B86F621693BAF007CB3FC /* Feature Modules */,
 				E71B86F521693BA9007CB3FC /* Extensions */,
 				E71B86E121693A20007CB3FC /* AppDelegate.swift */,
@@ -104,13 +104,13 @@
 			path = Onboarding;
 			sourceTree = "<group>";
 		};
-		E71B86F821693C3E007CB3FC /* Base UI  */ = {
+		E71B86F821693C3E007CB3FC /* Base UI */ = {
 			isa = PBXGroup;
 			children = (
 				E71B86F921693C9D007CB3FC /* AYLTheme.swift */,
 				E71675D3216949A1004BA952 /* StringStore.swift */,
 			);
-			path = "Base UI ";
+			path = "Base UI";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

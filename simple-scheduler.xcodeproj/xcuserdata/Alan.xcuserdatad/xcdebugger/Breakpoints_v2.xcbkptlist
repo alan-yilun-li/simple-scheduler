@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Simple Scheduler/AppDelegate.swift"
-            timestampString = "560549126.674467"
+            timestampString = "560551647.421598"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "21"
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Simple Scheduler/Feature Modules/Onboarding/OnboardingRootController.swift"
-            timestampString = "560549126.674647"
+            timestampString = "560551647.421693"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "37"
-            endingLineNumber = "37"
+            startingLineNumber = "41"
+            endingLineNumber = "41"
             landmarkName = "viewDidLoad()"
             landmarkType = "7">
          </BreakpointContent>
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Simple Scheduler/Feature Modules/Onboarding/OnboardingRootController.swift"
-            timestampString = "560549126.675236"
+            timestampString = "560551647.422178"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "48"
-            endingLineNumber = "48"
+            startingLineNumber = "52"
+            endingLineNumber = "52"
             landmarkName = "setupViews()"
             landmarkType = "7">
          </BreakpointContent>
