@@ -13,8 +13,8 @@ class TestViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let label = UILabel(frame: .zero)
-        label.text = "HELLO"
+        let label = UIButton(type: .system)
+        label.setTitle("back", for: .normal)
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
         
@@ -23,10 +23,11 @@ class TestViewController: UIViewController {
             label.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
         
+        label.addTarget(self, action: #selector(pop), for: .touchUpInside)
         view.backgroundColor = .white
     }
     
-    deinit {
-        print("test")
+    @objc func pop() {
+        navigationController?.popViewController(animated: true)
     }
 }

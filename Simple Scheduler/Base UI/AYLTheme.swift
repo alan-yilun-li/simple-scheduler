@@ -50,10 +50,12 @@ struct Fonts {
     private struct FontSize {
         static let big: CGFloat = 36
         static let standard: CGFloat = 24
+        static let small: CGFloat = 17
     }
     
     private struct FontNames {
-        static let standardFontName = "Futura-Medium"
+        static let standardFont = "Futura-Medium"
+        static let italicizedStandardFontName = "Futura-MediumItalic"
     }
     
     let theme: AYLTheme
@@ -64,13 +66,25 @@ struct Fonts {
     
     var mainTitle: UIFont {
         switch theme {
-        case .standard: return getDynamicFont(withName: FontNames.standardFontName, size: FontSize.big)
+        case .standard: return getDynamicFont(withName: FontNames.standardFont, size: FontSize.big)
         }
     }
     
     var standard: UIFont {
         switch theme {
-        case .standard: return getDynamicFont(withName: FontNames.standardFontName, size: FontSize.standard)
+        case .standard: return getDynamicFont(withName: FontNames.standardFont, size: FontSize.standard)
+        }
+    }
+    
+    var small: UIFont {
+        switch theme {
+        case .standard: return getDynamicFont(withName: FontNames.standardFont, size: FontSize.small)
+        }
+    }
+    
+    var smallItalicized: UIFont {
+        switch theme {
+        case .standard: return getDynamicFont(withName: FontNames.italicizedStandardFontName, size: FontSize.small)
         }
     }
 
