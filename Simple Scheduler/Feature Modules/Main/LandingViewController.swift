@@ -21,7 +21,6 @@ class LandingViewController: UIViewController {
     
     private struct Constants {
         static let defaultSpacing: CGFloat = 16.0
-        static let buttonSpacing: CGFloat = 25.0
         
         static let buttonBorderWidth: CGFloat = 3.0
         static let buttonLineHeightPercentage: CGFloat = 2.0
@@ -35,20 +34,51 @@ class LandingViewController: UIViewController {
     
     private lazy var enterTaskButton = makeButton(StringStore.enterTask)
     private lazy var getTaskButton = makeButton(StringStore.getTask)
-    private lazy var taskStoreLabel: UILabel = {
+    
+    lazy var friendlyTipLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = theme.fonts.
-        
-    }
+        label.font = theme.fonts.smallItalicized
+        label.textColor = theme.colours.mainTextColor
+        label.layer.opacity = 0.8
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        return label
+    }()
+    
+    lazy var taskStoreLabel: UILabel = {
+        let label = UILabel(frame: .zero)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = theme.fonts.small
+        label.textColor = theme.colours.mainTextColor
+        return label
+    }()
+    
+    private lazy var welcomeLabel: UILabel = {
+        let label = UILabel(frame: .zero)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = theme.fonts.mainTitle
+        label.textColor = theme.colours.mainTextColor
+        label.text = StringStore.hello
+        return label
+    }()
+
+    private lazy var settingsButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitleColor(theme.colours.mainTextColor, for: .normal)
+        button.titleLabel?.font = theme.fonts.mainTitle
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle(">", for: .normal)
+        return button
+    }()
     
     let presenter: LandingPresenter
     
     init(_ dependencies: AYLDependencies, presenter: LandingPresenter) {
         self.dependencies = dependencies
         self.presenter = presenter
-        presenter.viewController = self
         super.init(nibName: nil, bundle: nil)
+        presenter.viewController = self
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -78,24 +108,47 @@ private extension LandingViewController {
         
         view.addSubview(enterTaskButton)
         view.addSubview(getTaskButton)
+        view.addSubview(taskStoreLabel)
+        view.addSubview(welcomeLabel)
+        view.addSubview(settingsButton)
+        view.addSubview(friendlyTipLabel)
         
-        let button = enterTaskButton
-        button.layer.borderWidth = 2
+        presenter.updateStoreDescription(0)
+        presenter.updateFriendlyTipLabel()
         
-        
+        enterTaskButton.addTarget(presenter, action: #selector(presenter.didPressEnterTask), for: .touchUpInside)
+        settingsButton.addTarget(presenter, action: #selector(presenter.didPressSettings), for: .touchUpInside)
+        getTaskButton.addTarget(presenter, action: #selector(presenter.didPressGetTask), for: .touchUpInside)
     }
     
     func setupConstraints() {
         NSLayoutConstraint.activate([
+            welcomeLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.defaultSpacing),
+            welcomeLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing),
+            welcomeLabel.trailingAnchor.constraint(lessThanOrEqualTo: settingsButton.leadingAnchor, constant: -Constants.defaultSpacing),
+            
+            settingsButton.centerYAnchor.constraint(equalTo: welcomeLabel.centerYAnchor),
+            settingsButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing),
+            
+            friendlyTipLabel.topAnchor.constraint(equalTo: welcomeLabel.topAnchor, constant: Constants.defaultSpacing),
+            friendlyTipLabel.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
+            friendlyTipLabel.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor),
 
-            enterTaskButton.topAnchor.constraint(greaterThanOrEqualTo: view.topAnchor),
+            taskStoreLabel.topAnchor.constraint(equalTo: friendlyTipLabel.bottomAnchor, constant: Constants.defaultSpacing),
+            taskStoreLabel.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
+            taskStoreLabel.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor),
+            taskStoreLabel.bottomAnchor.constraint(lessThanOrEqualTo: enterTaskButton.topAnchor, constant: -Constants.defaultSpacing),
+
+            enterTaskButton.topAnchor.constraint(greaterThanOrEqualTo: welcomeLabel.bottomAnchor),
             enterTaskButton.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
             enterTaskButton.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor),
 
             getTaskButton.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
             getTaskButton.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor),
-            getTaskButton.topAnchor.constraint(equalTo: enterTaskButton.bottomAnchor, constant: Constants.buttonSpacing),
+            getTaskButton.topAnchor.constraint(equalTo: enterTaskButton.bottomAnchor, constant: Constants.defaultSpacing),
+            getTaskButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Constants.defaultSpacing),
             
+            // explicit sizing
             enterTaskButton.widthAnchor.constraint(equalTo: view.widthAnchor).withMultiplier(Constants.buttonWidthProportion),
             getTaskButton.widthAnchor.constraint(equalTo: view.widthAnchor).withMultiplier(Constants.buttonWidthProportion)
         ])

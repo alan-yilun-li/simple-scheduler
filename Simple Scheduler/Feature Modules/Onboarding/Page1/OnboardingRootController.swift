@@ -62,7 +62,7 @@ class OnboardingRootController: UIViewController {
 extension OnboardingRootController {
     
     @objc func continueButtonPressed() {
-        navigationController?.pushViewController(LandingViewController(dependencies), animated: true)
+        navigationController?.pushViewController(LandingViewController(dependencies, presenter: LandingPresenter()), animated: true)
     }
 }
 
