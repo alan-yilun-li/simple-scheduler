@@ -13,10 +13,16 @@ class CleanPushTransitionAnimator: NSObject {
     private struct Constants {
         static let animationDuration: TimeInterval = 0.35
     }
+    
+    private let direction: TransitionDirection
+    
+    init(direction: TransitionDirection) {
+        self.direction = direction
+    }
 }
 
 extension CleanPushTransitionAnimator: UIViewControllerAnimatedTransitioning {
-   
+    
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return Constants.animationDuration
     }
@@ -32,8 +38,14 @@ extension CleanPushTransitionAnimator: UIViewControllerAnimatedTransitioning {
         let leftFrame = CGRect(x: -width, y: 0, width: width, height: height)
         let rightFrame = CGRect(x: width, y: 0, width: width, height: height)
         
-        transitionContext.containerView.addSubview(toView)
-        toView.frame = rightFrame
+        switch direction {
+        case .right:
+            transitionContext.containerView.addSubview(toView)
+            toView.frame = rightFrame
+        case .left:
+            transitionContext.containerView.insertSubview(toView, belowSubview: fromView)
+            toView.frame = leftFrame
+        }
         
         toView.layoutIfNeeded()
         
@@ -42,7 +54,7 @@ extension CleanPushTransitionAnimator: UIViewControllerAnimatedTransitioning {
             delay: 0,
             options: .curveEaseInOut,
             animations: {
-                fromView.frame = leftFrame
+                fromView.frame = self.direction == .right ? leftFrame : rightFrame
                 toView.frame = centerFrame
         }, completion: { _ in
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)

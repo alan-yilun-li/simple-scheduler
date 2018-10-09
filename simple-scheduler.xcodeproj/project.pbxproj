@@ -15,6 +15,8 @@
 		E71B86EC21693A25007CB3FC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E71B86EA21693A25007CB3FC /* LaunchScreen.storyboard */; };
 		E71B86F421693BA3007CB3FC /* UserDefaults+Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71B86F321693BA3007CB3FC /* UserDefaults+Keys.swift */; };
 		E71B86FA21693C9D007CB3FC /* AYLTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71B86F921693C9D007CB3FC /* AYLTheme.swift */; };
+		E762E786216C7806006D1901 /* CleanPushInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E762E785216C7806006D1901 /* CleanPushInteractor.swift */; };
+		E762E788216C783F006D1901 /* AnimationHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E762E787216C783F006D1901 /* AnimationHelpers.swift */; };
 		E77C584A21695C700028D1B6 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77C584921695C700028D1B6 /* TestViewController.swift */; };
 		E77C584D216962760028D1B6 /* HitTestButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77C584C216962760028D1B6 /* HitTestButton.swift */; };
 		E77C5850216969F20028D1B6 /* CleanPushTransitionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77C584F216969F20028D1B6 /* CleanPushTransitionAnimator.swift */; };
@@ -35,6 +37,8 @@
 		E71B86ED21693A25007CB3FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E71B86F321693BA3007CB3FC /* UserDefaults+Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Keys.swift"; sourceTree = "<group>"; };
 		E71B86F921693C9D007CB3FC /* AYLTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AYLTheme.swift; sourceTree = "<group>"; };
+		E762E785216C7806006D1901 /* CleanPushInteractor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CleanPushInteractor.swift; sourceTree = "<group>"; };
+		E762E787216C783F006D1901 /* AnimationHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationHelpers.swift; sourceTree = "<group>"; };
 		E77C584921695C700028D1B6 /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		E77C584C216962760028D1B6 /* HitTestButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HitTestButton.swift; sourceTree = "<group>"; };
 		E77C584F216969F20028D1B6 /* CleanPushTransitionAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanPushTransitionAnimator.swift; sourceTree = "<group>"; };
@@ -153,6 +157,7 @@
 		E77C584E216969D60028D1B6 /* Animation */ = {
 			isa = PBXGroup;
 			children = (
+				E762E787216C783F006D1901 /* AnimationHelpers.swift */,
 				E7FFEAFD216A9439001CE6AD /* Animators */,
 			);
 			path = Animation;
@@ -170,6 +175,7 @@
 			isa = PBXGroup;
 			children = (
 				E77C584F216969F20028D1B6 /* CleanPushTransitionAnimator.swift */,
+				E762E785216C7806006D1901 /* CleanPushInteractor.swift */,
 			);
 			path = Animators;
 			sourceTree = "<group>";
@@ -254,8 +260,10 @@
 				E71B86FA21693C9D007CB3FC /* AYLTheme.swift in Sources */,
 				E71B86E221693A20007CB3FC /* AppDelegate.swift in Sources */,
 				E7FFEAFA216A8243001CE6AD /* BlankNavigationController.swift in Sources */,
+				E762E786216C7806006D1901 /* CleanPushInteractor.swift in Sources */,
 				E71675D22169480D004BA952 /* AYLDependencies.swift in Sources */,
 				E77C584A21695C700028D1B6 /* TestViewController.swift in Sources */,
+				E762E788216C783F006D1901 /* AnimationHelpers.swift in Sources */,
 				E77C584D216962760028D1B6 /* HitTestButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

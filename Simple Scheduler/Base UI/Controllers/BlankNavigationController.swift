@@ -17,6 +17,8 @@ class BlankNavigationController: UINavigationController {
     
     var navigationMode: NavigationMode = .blankPush
     
+    private var popInteractors = [InteractiveAnimator]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setNavigationBarHidden(true, animated: false)
@@ -26,6 +28,14 @@ class BlankNavigationController: UINavigationController {
 
 // MARK: - UINavigationControllerDelegate
 extension BlankNavigationController: UINavigationControllerDelegate {
+    
+    func navigationController(
+        _ navigationController: UINavigationController,
+        interactionControllerFor animationController: UIViewControllerAnimatedTransitioning
+    ) -> UIViewControllerInteractiveTransitioning? {
+        guard let interactor = popInteractors.last else { return nil }
+        return interactor.isAnimating ? interactor : nil
+    }
 
     func navigationController(
         _ navigationController: UINavigationController,
@@ -35,10 +45,19 @@ extension BlankNavigationController: UINavigationControllerDelegate {
         if operation == .push {
             switch navigationMode {
             case .blankPush:
-                return CleanPushTransitionAnimator()
+                let interactor = CleanPopInteractor(
+                    for: toVC,
+                    direction: .right,
+                    { navigationController.popViewController(animated: true) },
+                    completion: { [weak self] in
+                        self?.popInteractors.removeLast()
+                    }
+                )
+                popInteractors.append(interactor)
+                return CleanPushTransitionAnimator(direction: .right)
             }
         } else {
-            return nil
+            return CleanPushTransitionAnimator(direction: .left)
         }
     }
 }

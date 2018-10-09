@@ -17,8 +17,8 @@ class LandingPresenter: NSObject {
     }
     
     func updateFriendlyTipLabel() {
-        viewController?.friendlyTipLabel.text =
-        
+        // TODO ayl: replace with random after updating to swift 4.2
+        viewController?.friendlyTipLabel.text = StringStore.friendlyTips.first!
     }
 }
 
