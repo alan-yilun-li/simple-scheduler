@@ -27,6 +27,9 @@ class CleanPushPopInteractor: UIPercentDrivenInteractiveTransition, InteractiveA
     /// Cleanup when animation finishes
     let completion: (() -> Void)?
     
+    /// Direction of the interaction
+    let direction: TransitionDirection
+    
     init(
         for controller: UIViewController,
         direction: TransitionDirection,
@@ -35,16 +38,17 @@ class CleanPushPopInteractor: UIPercentDrivenInteractiveTransition, InteractiveA
     ) {
         self.navigationBlock = navigationBlock
         self.completion = completion
+        self.direction = direction
         super.init()
-        let backGesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleGesture(_:)))
-        backGesture.edges = direction == .left ? .left : .right
+        let swipeGesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleGesture(_:)))
+        swipeGesture.edges = direction == .left ? .left : .right
         attachedView = controller.view
-        attachedView.addGestureRecognizer(backGesture)
+        attachedView.addGestureRecognizer(swipeGesture)
     }
     
     @objc private func handleGesture(_ gesture: UIScreenEdgePanGestureRecognizer) {
         let viewTranslation = gesture.translation(in: gesture.view?.superview)
-        let transitionProgress = viewTranslation.x / attachedView.frame.width
+        let transitionProgress = viewTranslation.x / attachedView.frame.width * (direction == .right ? -1 : 1)
 
         switch gesture.state {
         case .began:
