@@ -16,7 +16,7 @@ class CleanPushPopInteractor: UIPercentDrivenInteractiveTransition, InteractiveA
     var completionPercentage: CGFloat = 0.5
     
     /// Max velocity of swipe before animation triggers
-    var maxVelocity: CGFloat = 1000
+    var maxVelocity: CGFloat = 200
     
     /// View the interaction is occuring in
     var attachedView: UIView!
