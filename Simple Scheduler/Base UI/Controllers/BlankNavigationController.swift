@@ -18,11 +18,23 @@ class BlankNavigationController: UINavigationController {
     var navigationMode: NavigationMode = .blankPush
     
     private var popInteractors = [InteractiveAnimator]()
+    private var pushInteractors = [InteractiveAnimator]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setNavigationBarHidden(true, animated: false)
         delegate = self
+    }
+    
+    func setupTopController(forPushing toVC: UIViewController) {
+        guard let topController = topViewController else { return }
+        let interactor = CleanPushPopInteractor(
+            for: topController,
+            direction: .right,
+            { [weak self] in self?.pushViewController(toVC, animated: true) },
+            completion: { [weak self] in self?.pushInteractors.removeFirst() }
+        )
+        pushInteractors.append(interactor)
     }
 }
 
@@ -33,8 +45,26 @@ extension BlankNavigationController: UINavigationControllerDelegate {
         _ navigationController: UINavigationController,
         interactionControllerFor animationController: UIViewControllerAnimatedTransitioning
     ) -> UIViewControllerInteractiveTransitioning? {
-        guard let interactor = popInteractors.last else { return nil }
-        return interactor.isAnimating ? interactor : nil
+        
+        if navigationMode == .blankPush {
+            guard let animator = animationController as? CleanPushTransitionAnimator else {
+                assertionFailure("Incorrect class found")
+                return nil
+            }
+            let interactor: InteractiveAnimator?
+            switch animator.direction {
+            case .left:
+                interactor = popInteractors.last
+            case .right:
+                interactor = pushInteractors.first
+            }
+            guard let interactiveAnimator = interactor else {
+                assertionFailure("Did not properly configure interactors")
+                return nil
+            }
+            return interactiveAnimator.isAnimating ? interactiveAnimator : nil
+        }
+        return nil
     }
 
     func navigationController(
@@ -45,13 +75,11 @@ extension BlankNavigationController: UINavigationControllerDelegate {
         if operation == .push {
             switch navigationMode {
             case .blankPush:
-                let interactor = CleanPopInteractor(
+                let interactor = CleanPushPopInteractor(
                     for: toVC,
-                    direction: .right,
-                    { navigationController.popViewController(animated: true) },
-                    completion: { [weak self] in
-                        self?.popInteractors.removeLast()
-                    }
+                    direction: .left,
+                    { [weak self] in self?.popViewController(animated: true) },
+                    completion: { [weak self] in self?.popInteractors.removeLast() }
                 )
                 popInteractors.append(interactor)
                 return CleanPushTransitionAnimator(direction: .right)

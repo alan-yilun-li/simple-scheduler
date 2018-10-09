@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CleanPopInteractor: UIPercentDrivenInteractiveTransition, InteractiveAnimator {
+class CleanPushPopInteractor: UIPercentDrivenInteractiveTransition, InteractiveAnimator {
     
     var isAnimating: Bool = false
     

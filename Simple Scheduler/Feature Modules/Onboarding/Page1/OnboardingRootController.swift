@@ -32,6 +32,8 @@ class OnboardingRootController: UIViewController {
         return button
     }()
     
+    private lazy var nextVC = LandingViewController(dependencies, presenter: LandingPresenter())
+    
     init(_ dependencies: AYLDependencies) {
         self.dependencies = dependencies
         super.init(nibName: nil, bundle: nil)
@@ -45,6 +47,12 @@ class OnboardingRootController: UIViewController {
         super.viewDidLoad()
         setupViews()
         setupConstraints()
+        
+        guard let navigationVC = navigationController as? BlankNavigationController else {
+            assertionFailure("Wrong class of nav controller")
+            return
+        }
+        navigationVC.setupTopController(forPushing: nextVC)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -62,7 +70,7 @@ class OnboardingRootController: UIViewController {
 extension OnboardingRootController {
     
     @objc func continueButtonPressed() {
-        navigationController?.pushViewController(LandingViewController(dependencies, presenter: LandingPresenter()), animated: true)
+        navigationController?.pushViewController(nextVC, animated: true)
     }
 }
 

@@ -14,7 +14,7 @@ class CleanPushTransitionAnimator: NSObject {
         static let animationDuration: TimeInterval = 0.35
     }
     
-    private let direction: TransitionDirection
+    let direction: TransitionDirection
     
     init(direction: TransitionDirection) {
         self.direction = direction
