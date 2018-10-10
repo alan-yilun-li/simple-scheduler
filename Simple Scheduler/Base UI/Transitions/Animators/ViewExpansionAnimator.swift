@@ -30,9 +30,11 @@ class ViewExpansionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
 
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         let containerView = transitionContext.containerView
-        guard
-            let toView = transitionContext.view(forKey: .to),
-            let detailView = presenting ? toView: transitionContext.view(forKey: .from) else { return }
+        guard let toView = transitionContext.view(forKey: .to) else {
+            return
+        }
+        let detailView = presenting ? toView: fromView
+        let originFrame = fromView.convert(fromView.frame, to: fromView.superview)
 
         let initialFrame: CGRect
         let finalFrame: CGRect
