@@ -24,10 +24,10 @@ class TestViewController: UIViewController {
         ])
         
         label.addTarget(self, action: #selector(pop), for: .touchUpInside)
-        view.backgroundColor = .white
+        view.backgroundColor = .orange
     }
     
     @objc func pop() {
-        navigationController?.popViewController(animated: true)
+        dismiss(animated: true, completion: nil)
     }
 }
