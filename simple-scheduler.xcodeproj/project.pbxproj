@@ -20,6 +20,8 @@
 		E77C584A21695C700028D1B6 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77C584921695C700028D1B6 /* TestViewController.swift */; };
 		E77C584D216962760028D1B6 /* HitTestButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77C584C216962760028D1B6 /* HitTestButton.swift */; };
 		E77C5850216969F20028D1B6 /* CleanPushTransitionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77C584F216969F20028D1B6 /* CleanPushTransitionAnimator.swift */; };
+		E7CA5940216E4DBA005B3ED6 /* PopupPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7CA593F216E4DBA005B3ED6 /* PopupPresentationController.swift */; };
+		E7CA5942216E4DC8005B3ED6 /* ViewExpansionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7CA5941216E4DC8005B3ED6 /* ViewExpansionAnimator.swift */; };
 		E7FFEAFA216A8243001CE6AD /* BlankNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7FFEAF9216A8243001CE6AD /* BlankNavigationController.swift */; };
 		E7FFEB02216AB120001CE6AD /* LandingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7FFEB01216AB120001CE6AD /* LandingViewController.swift */; };
 		E7FFEB04216AB87C001CE6AD /* NSLayoutConstraint+Multiplier.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7FFEB03216AB87C001CE6AD /* NSLayoutConstraint+Multiplier.swift */; };
@@ -42,6 +44,8 @@
 		E77C584921695C700028D1B6 /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		E77C584C216962760028D1B6 /* HitTestButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HitTestButton.swift; sourceTree = "<group>"; };
 		E77C584F216969F20028D1B6 /* CleanPushTransitionAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanPushTransitionAnimator.swift; sourceTree = "<group>"; };
+		E7CA593F216E4DBA005B3ED6 /* PopupPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupPresentationController.swift; sourceTree = "<group>"; };
+		E7CA5941216E4DC8005B3ED6 /* ViewExpansionAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewExpansionAnimator.swift; sourceTree = "<group>"; };
 		E7FFEAF9216A8243001CE6AD /* BlankNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlankNavigationController.swift; sourceTree = "<group>"; };
 		E7FFEB01216AB120001CE6AD /* LandingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingViewController.swift; sourceTree = "<group>"; };
 		E7FFEB03216AB87C001CE6AD /* NSLayoutConstraint+Multiplier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint+Multiplier.swift"; sourceTree = "<group>"; };
@@ -127,7 +131,7 @@
 		E71B86F821693C3E007CB3FC /* Base UI */ = {
 			isa = PBXGroup;
 			children = (
-				E77C584E216969D60028D1B6 /* Animation */,
+				E77C584E216969D60028D1B6 /* Transitions */,
 				E7FFEAF8216A8229001CE6AD /* Controllers */,
 				E77C584B216962580028D1B6 /* Views */,
 				E71B86F921693C9D007CB3FC /* AYLTheme.swift */,
@@ -154,13 +158,30 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		E77C584E216969D60028D1B6 /* Animation */ = {
+		E77C584E216969D60028D1B6 /* Transitions */ = {
+			isa = PBXGroup;
+			children = (
+				E7CA5944216E4DDF005B3ED6 /* Push */,
+				E7CA5943216E4DCF005B3ED6 /* Presentations */,
+				E7FFEAFD216A9439001CE6AD /* Animators */,
+			);
+			path = Transitions;
+			sourceTree = "<group>";
+		};
+		E7CA5943216E4DCF005B3ED6 /* Presentations */ = {
+			isa = PBXGroup;
+			children = (
+				E7CA593F216E4DBA005B3ED6 /* PopupPresentationController.swift */,
+			);
+			path = Presentations;
+			sourceTree = "<group>";
+		};
+		E7CA5944216E4DDF005B3ED6 /* Push */ = {
 			isa = PBXGroup;
 			children = (
 				E762E787216C783F006D1901 /* AnimationHelpers.swift */,
-				E7FFEAFD216A9439001CE6AD /* Animators */,
 			);
-			path = Animation;
+			path = Push;
 			sourceTree = "<group>";
 		};
 		E7FFEAF8216A8229001CE6AD /* Controllers */ = {
@@ -174,6 +195,7 @@
 		E7FFEAFD216A9439001CE6AD /* Animators */ = {
 			isa = PBXGroup;
 			children = (
+				E7CA5941216E4DC8005B3ED6 /* ViewExpansionAnimator.swift */,
 				E77C584F216969F20028D1B6 /* CleanPushTransitionAnimator.swift */,
 				E762E785216C7806006D1901 /* CleanPushInteractor.swift */,
 			);
@@ -250,6 +272,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E7CA5940216E4DBA005B3ED6 /* PopupPresentationController.swift in Sources */,
 				E71675D4216949A1004BA952 /* StringStore.swift in Sources */,
 				E71B86F421693BA3007CB3FC /* UserDefaults+Keys.swift in Sources */,
 				E7FFEB06216ABE8E001CE6AD /* LandingPresenter.swift in Sources */,
@@ -257,6 +280,7 @@
 				E71B86E421693A20007CB3FC /* OnboardingRootController.swift in Sources */,
 				E7FFEB04216AB87C001CE6AD /* NSLayoutConstraint+Multiplier.swift in Sources */,
 				E77C5850216969F20028D1B6 /* CleanPushTransitionAnimator.swift in Sources */,
+				E7CA5942216E4DC8005B3ED6 /* ViewExpansionAnimator.swift in Sources */,
 				E71B86FA21693C9D007CB3FC /* AYLTheme.swift in Sources */,
 				E71B86E221693A20007CB3FC /* AppDelegate.swift in Sources */,
 				E7FFEAFA216A8243001CE6AD /* BlankNavigationController.swift in Sources */,

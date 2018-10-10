@@ -12,6 +12,9 @@ class LandingPresenter: NSObject {
     
     weak var viewController: LandingViewController?
     
+    // Remembering last pressed button for the viewExpansionAnimator
+    private var pressedExpandableButton: UIButton!
+    
     func updateStoreDescription(_ items: Int) {
         viewController?.taskStoreLabel.text = "\(StringStore.taskStoreDescriptionPart1) \(items) \(StringStore.taskStoreDescriptionPart2)"
     }
@@ -25,15 +28,48 @@ class LandingPresenter: NSObject {
 // MARK: - Actions
 extension LandingPresenter {
     
-    @objc func didPressEnterTask() {
-        viewController?.navigationController?.pushViewController(TestViewController(), animated: true)
+    @objc func didPressEnterTask(_ sender: UIButton) {
+        pressedExpandableButton = sender
+        let presentedVC = TestViewController()
+        presentedVC.transitioningDelegate = self
+        presentedVC.modalPresentationStyle = .custom
+        viewController?.present(presentedVC, animated: true, completion: nil)
     }
     
-    @objc func didPressSettings() {
+    @objc func didPressSettings(_ sender: UIButton) {
         
     }
     
-    @objc func didPressGetTask() {
-        viewController?.navigationController?.popViewController(animated: true)
+    @objc func didPressGetTask(_ sender: UIButton) {
+        pressedExpandableButton = sender
+        let presentedVC = TestViewController()
+        presentedVC.transitioningDelegate = self
+        presentedVC.modalPresentationStyle = .custom
+        viewController?.present(presentedVC, animated: true, completion: nil)
+
+    }
+}
+
+// MARK: - Presentation Methods
+extension LandingPresenter: UIViewControllerTransitioningDelegate {
+    
+    func presentationController(
+        forPresented presented: UIViewController,
+        presenting: UIViewController?,
+        source: UIViewController
+    ) -> UIPresentationController? {
+        return PopupPresentationController(presentedViewController: presented, presenting: presenting)
+    }
+    
+    func animationController(
+        forPresented presented: UIViewController,
+        presenting: UIViewController,
+        source: UIViewController
+    ) -> UIViewControllerAnimatedTransitioning? {
+        return ViewExpansionAnimator(presenting: true, fromView: pressedExpandableButton)
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return ViewExpansionAnimator(presenting: false, fromView: pressedExpandableButton)
     }
 }
