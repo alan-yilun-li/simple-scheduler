@@ -66,10 +66,10 @@ extension LandingPresenter: UIViewControllerTransitioningDelegate {
         presenting: UIViewController,
         source: UIViewController
     ) -> UIViewControllerAnimatedTransitioning? {
-        return ViewExpansionAnimator(isPresenting: true, fromView: pressedExpandableButton)
+        return nil // ViewExpansionAnimator(isPresenting: true, fromView: pressedExpandableButton)
     }
     
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return ViewExpansionAnimator(isPresenting: false, fromView: pressedExpandableButton)
+        return nil // ViewExpansionAnimator(isPresenting: false, fromView: pressedExpandableButton)
     }
 }

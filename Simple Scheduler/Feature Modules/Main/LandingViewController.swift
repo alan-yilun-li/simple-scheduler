@@ -174,6 +174,9 @@ private extension LandingViewController {
         button.layer.cornerRadius = buttonHeight / 2
         button.layer.borderWidth = Constants.buttonBorderWidth
 
+        button.layer.shadowOpacity = 0.5
+        button.layer.shadowOffset = CGSize(width: 3, height: 3)
+        
         return button
     }
 }

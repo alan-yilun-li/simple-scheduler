@@ -38,7 +38,7 @@ class ViewExpansionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         let containerView = transitionContext.containerView
         let toVC = transitionContext.viewController(forKey: .to)
-        let toView = transitionContext.view(forKey: .to)
+        var toView = transitionContext.view(forKey: .to)
         let fromVC = transitionContext.viewController(forKey: .from)
         let fromView = transitionContext.view(forKey: .from)
         
@@ -47,19 +47,29 @@ class ViewExpansionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         let toViewFinalFrame = transitionContext.finalFrame(for: toVC!)
         var fromViewFinalFrame = transitionContext.finalFrame(for: fromVC!)
         
+        let toViewWasNil = toView == nil
+        
+        if toViewWasNil {
+            toView = toVC?.view
+        }
+        
         if isPresenting {
             toViewStartFrame.origin.x = containerFrame.size.width
             toViewStartFrame.origin.y = containerFrame.size.height
         }
-            else {
+        else {
             fromViewFinalFrame = CGRect(x: containerFrame.size.width,
                                         y:     containerFrame.size.height,
-                                        width:      toVC!.view!.frame.size.width,
-                                        height:      toVC!.view!.frame.size.height)
-            }
+                                        width:      toView!.frame.size.width,
+                                        height:      toView!.frame.size.height)
+        }
         
-//            containerView.addSubview(toView!)
-            toView!.frame = toViewStartFrame
+        
+        let containerSuper = containerView.superview
+
+        
+        containerView.addSubview(toView!)
+        toView!.frame = toViewStartFrame
         
         UIView.animate(withDuration: transitionDuration(using: transitionContext),
                        animations: {
@@ -69,12 +79,11 @@ class ViewExpansionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
                         } else {
                             fromView?.frame = fromViewFinalFrame
                         }
-        }) { finished in
-            let success = !transitionContext.transitionWasCancelled
-            if (self.isPresenting && !success) || (!self.isPresenting && success) {
-                toView?.removeFromSuperview()
+        }) { _ in
+            transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+            if toViewWasNil {
+                containerSuper?.addSubview(toView!)
             }
-            transitionContext.completeTransition(success)
         }
         
 //        let containerView = transitionContext.containerView

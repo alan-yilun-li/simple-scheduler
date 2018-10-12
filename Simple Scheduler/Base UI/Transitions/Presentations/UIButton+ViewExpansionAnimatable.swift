@@ -9,7 +9,7 @@
 import UIKit
 
 extension UIButton: ViewExpansionAnimatable {
-    
+
     public func copy(with zone: NSZone? = nil) -> Any {
         let button = UIButton(type: .system)
         button.frame = frame
