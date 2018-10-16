@@ -15,6 +15,15 @@ class LandingPresenter: NSObject {
     // Remembering last pressed button for the viewExpansionAnimator
     private var pressedExpandableButton: UIButton!
     
+    private let dependencies: AYLDependencies
+    private var theme: AYLTheme {
+        return dependencies.defaults.selectedTheme
+    }
+    
+    init(_ dependencies: AYLDependencies) {
+        self.dependencies = dependencies
+    }
+    
     func updateStoreDescription(_ items: Int) {
         viewController?.taskStoreLabel.text = "\(StringStore.taskStoreDescriptionPart1) \(items) \(StringStore.taskStoreDescriptionPart2)"
     }
@@ -30,7 +39,7 @@ extension LandingPresenter {
     
     @objc func didPressEnterTask(_ sender: UIButton) {
         pressedExpandableButton = sender
-        let presentedVC = TestViewController()
+        let presentedVC = TestViewController(dependencies: dependencies)
         presentedVC.transitioningDelegate = self
         presentedVC.modalPresentationStyle = .custom
         viewController?.present(presentedVC, animated: true, completion: nil)
@@ -42,7 +51,7 @@ extension LandingPresenter {
     
     @objc func didPressGetTask(_ sender: UIButton) {
         pressedExpandableButton = sender
-        let presentedVC = TestViewController()
+        let presentedVC = TestViewController(dependencies: dependencies)
         presentedVC.transitioningDelegate = self
         presentedVC.modalPresentationStyle = .custom
         viewController?.present(presentedVC, animated: true, completion: nil)

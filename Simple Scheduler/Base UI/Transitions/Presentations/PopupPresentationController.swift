@@ -28,7 +28,7 @@ class PopupPresentationController: UIPresentationController {
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(keyboardWillChangeFrame),
-                                               name: NSNotification.Name.UIKeyboardWillChangeFrame,
+                                               name: UIResponder.keyboardWillChangeFrameNotification,
                                                object: nil)
     }
 
@@ -39,7 +39,7 @@ class PopupPresentationController: UIPresentationController {
     }
 
     @objc func keyboardWillChangeFrame(_ notif: Notification) {
-        guard let keyboardFrame = notif.userInfo?[UIKeyboardFrameEndUserInfoKey] as? CGRect else {
+        guard let keyboardFrame = notif.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else {
             return
         }
         modalInsets.bottom = keyboardFrame.height + Constants.minimumBottomPadding

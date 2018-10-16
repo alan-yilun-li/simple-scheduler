@@ -32,7 +32,7 @@ class OnboardingRootController: UIViewController {
         return button
     }()
     
-    private lazy var nextVC = LandingViewController(dependencies, presenter: LandingPresenter())
+    private lazy var nextVC = LandingViewController(dependencies, presenter: LandingPresenter(dependencies))
     
     init(_ dependencies: AYLDependencies) {
         self.dependencies = dependencies
