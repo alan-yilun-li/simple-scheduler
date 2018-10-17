@@ -7,8 +7,10 @@
 //
 
 import Foundation
+import CoreData
 
-struct AYLDependencies {
+class AYLDependencies {
     
     var defaults = UserDefaults.standard
+    var persistentContainer: NSPersistentContainer!
 }

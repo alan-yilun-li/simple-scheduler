@@ -19,6 +19,7 @@ enum AYLTheme: Int {
 struct Colours {
     static let aylWhite = UIColor.white
     static let aylBlack = UIColor.black
+    static let aylGrey = UIColor.darkGray
     
     let theme: AYLTheme
     
@@ -36,6 +37,10 @@ struct Colours {
         switch theme {
         case .standard: return Colours.aylBlack
         }
+    }
+    
+    var mainGrey: UIColor {
+        return Colours.aylGrey
     }
     
     var secondaryColor: UIColor {

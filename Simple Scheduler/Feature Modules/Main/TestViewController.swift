@@ -23,9 +23,6 @@ class TestViewController: UIViewController {
         return dependencies.defaults.selectedTheme
     }
     
-    // TODO ayl: remove test label
-    let label = UIButton(type: .system)
-    
     private lazy var timeLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -70,6 +67,23 @@ class TestViewController: UIViewController {
         button.layer.shadowOpacity = 0.5
         button.layer.shadowOffset = CGSize(width: 3, height: 3)
         
+        button.addTarget(self, action: #selector(actionButtonPressed), for: .touchUpInside)
+        
+        return button
+    }()
+    
+    private lazy var cancelButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        button.setTitle("x", for: .normal)
+        button.setTitleColor(theme.colours.mainGrey, for: .normal)
+        button.titleLabel?.font = theme.fonts.standard
+        
+//        button.layer.shadowOpacity = 0.5
+//        button.layer.shadowOffset = CGSize(width: 3, height: 3)
+        button.addTarget(self, action: #selector(pop), for: .touchUpInside)
+
         return button
     }()
     
@@ -95,6 +109,14 @@ class TestViewController: UIViewController {
     }
 }
 
+// MARK: - Actions
+extension TestViewController {
+    
+    @objc func actionButtonPressed() {
+        pop()
+    }
+}
+
 // MARK: - View Setup
 private extension TestViewController {
     
@@ -109,21 +131,17 @@ private extension TestViewController {
         view.layer.shadowRadius = 10
         view.layer.shouldRasterize = true
 
-        label.setTitle("back", for: .normal)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(label)
+        view.addSubview(cancelButton)
         view.addSubview(acceptButton)
         view.addSubview(timePicker)
         view.addSubview(timeLabel)
-        
-        label.addTarget(self, action: #selector(pop), for: .touchUpInside)
     }
     
     func setupConstraints() {
         
         NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            cancelButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing),
+            cancelButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             
             timeLabel.centerYAnchor.constraint(equalTo: timePicker.centerYAnchor),
             timeLabel.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),

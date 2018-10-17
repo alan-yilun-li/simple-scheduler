@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +17,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         let dependencies = AYLDependencies()
+        
+        setupContainer { container in
+            dependencies.persistentContainer = container
+            
+        }
         
         if UserDefaults.standard.userShouldOnboard {
             let rootViewController = OnboardingRootController(dependencies)
@@ -28,6 +34,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
         }
         return true
+    }
+    
+    
+    func setupContainer(completion: @escaping (NSPersistentContainer) -> ()) {
+        let container = NSPersistentContainer(name: "TaskPlanning")
+        container.loadPersistentStores { _, error in
+            guard error == nil else {
+                fatalError("Failed to load store: \(error!)")
+            }
+            DispatchQueue.main.async { completion(container) }
+        }
     }
 }
 

@@ -25,11 +25,14 @@ class PopupPresentationController: UIPresentationController {
 
     override init(presentedViewController: UIViewController, presenting: UIViewController!) {
         super.init(presentedViewController: presentedViewController, presenting: presenting)
-
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(keyboardWillChangeFrame),
                                                name: UIResponder.keyboardWillChangeFrameNotification,
                                                object: nil)
+    }
+    
+    override func presentationTransitionWillBegin() {
+        containerView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(outsideViewTapped)))
     }
 
     override func containerViewWillLayoutSubviews() {
@@ -43,5 +46,9 @@ class PopupPresentationController: UIPresentationController {
             return
         }
         modalInsets.bottom = keyboardFrame.height + Constants.minimumBottomPadding
+    }
+    
+    @objc func outsideViewTapped(_ sender: UITapGestureRecognizer) {
+        presentedViewController.dismiss(animated: true, completion: nil)
     }
 }
