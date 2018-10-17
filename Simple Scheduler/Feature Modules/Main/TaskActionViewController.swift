@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TestViewController: UIViewController {
+class TaskActionViewController: UIViewController {
     
     private struct Constants {
         static let defaultSpacing: CGFloat = 16.0
@@ -22,6 +22,19 @@ class TestViewController: UIViewController {
     private var theme: AYLTheme {
         return dependencies.defaults.selectedTheme
     }
+    
+    private lazy var difficultyControl: UISegmentedControl = {
+        let control = UISegmentedControl(frame: .zero)
+        control.insertSegment(withTitle: "Easy", at: 0, animated: false)
+        control.insertSegment(withTitle: "Medium", at: 1, animated: false)
+        control.insertSegment(withTitle: "Difficult", at: 2, animated: false)
+        control.selectedSegmentIndex = 0
+        control.translatesAutoresizingMaskIntoConstraints = false
+        control.backgroundColor = theme.colours.mainColor
+        control.tintColor = theme.colours.secondaryColor
+        
+        return control
+    }()
     
     private lazy var timeLabel: UILabel = {
         let label = UILabel(frame: .zero)
@@ -80,8 +93,8 @@ class TestViewController: UIViewController {
         button.setTitleColor(theme.colours.mainGrey, for: .normal)
         button.titleLabel?.font = theme.fonts.standard
         
-//        button.layer.shadowOpacity = 0.5
-//        button.layer.shadowOffset = CGSize(width: 3, height: 3)
+        button.layer.shadowOpacity = 0.2
+        button.layer.shadowOffset = CGSize(width: 1, height: 1)
         button.addTarget(self, action: #selector(pop), for: .touchUpInside)
 
         return button
@@ -110,7 +123,7 @@ class TestViewController: UIViewController {
 }
 
 // MARK: - Actions
-extension TestViewController {
+extension TaskActionViewController {
     
     @objc func actionButtonPressed() {
         pop()
@@ -118,7 +131,7 @@ extension TestViewController {
 }
 
 // MARK: - View Setup
-private extension TestViewController {
+private extension TaskActionViewController {
     
     func setupViews() {
         
@@ -135,6 +148,7 @@ private extension TestViewController {
         view.addSubview(acceptButton)
         view.addSubview(timePicker)
         view.addSubview(timeLabel)
+        view.addSubview(difficultyControl)
     }
     
     func setupConstraints() {
@@ -142,6 +156,7 @@ private extension TestViewController {
         NSLayoutConstraint.activate([
             cancelButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing),
             cancelButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            
             
             timeLabel.centerYAnchor.constraint(equalTo: timePicker.centerYAnchor),
             timeLabel.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
@@ -152,7 +167,11 @@ private extension TestViewController {
             timePicker.leadingAnchor.constraint(equalTo: timeLabel.trailingAnchor, constant: Constants.defaultSpacing),
             timePicker.widthAnchor.constraint(equalTo: view.widthAnchor).withMultiplier(3/5),
             timePicker.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor),
-            timePicker.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: -Constants.defaultSpacing),
+            timePicker.bottomAnchor.constraint(equalTo: difficultyControl.topAnchor, constant: -Constants.defaultSpacing),
+            
+            difficultyControl.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
+            difficultyControl.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor),
+            difficultyControl.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: -Constants.defaultSpacing),
             
             acceptButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
                                                  constant: -Constants.defaultSpacing),

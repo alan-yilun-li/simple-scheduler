@@ -14,6 +14,8 @@ class PopupPresentationController: UIPresentationController {
             self.containerView?.setNeedsLayout()
         }
     }
+    
+    private var layoutView: UIView!
 
     override var frameOfPresentedViewInContainerView: CGRect {
         let superFrame = containerView?.frame ?? .zero
@@ -32,12 +34,20 @@ class PopupPresentationController: UIPresentationController {
     }
     
     override func presentationTransitionWillBegin() {
-        containerView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(outsideViewTapped)))
+        layoutView = UIView()
+        layoutView.frame = containerView?.frame ?? .zero
+        layoutView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(outsideViewTapped)))
+        containerView?.addSubview(layoutView)
+    }
+    
+    override func dismissalTransitionWillBegin() {
+        layoutView.removeFromSuperview()
     }
 
     override func containerViewWillLayoutSubviews() {
         UIView.animate(withDuration: Constants.adjustmentAnimationTime) {
             self.presentedView?.frame = self.frameOfPresentedViewInContainerView
+            self.layoutView.frame = self.containerView?.frame ?? .zero
         }
     }
 

@@ -39,7 +39,7 @@ extension LandingPresenter {
     
     @objc func didPressEnterTask(_ sender: UIButton) {
         pressedExpandableButton = sender
-        let presentedVC = TestViewController(dependencies: dependencies)
+        let presentedVC = TaskActionViewController(dependencies: dependencies)
         presentedVC.transitioningDelegate = self
         presentedVC.modalPresentationStyle = .custom
         viewController?.present(presentedVC, animated: true, completion: nil)
@@ -51,7 +51,7 @@ extension LandingPresenter {
     
     @objc func didPressGetTask(_ sender: UIButton) {
         pressedExpandableButton = sender
-        let presentedVC = TestViewController(dependencies: dependencies)
+        let presentedVC = TaskActionViewController(dependencies: dependencies)
         presentedVC.transitioningDelegate = self
         presentedVC.modalPresentationStyle = .custom
         viewController?.present(presentedVC, animated: true, completion: nil)
