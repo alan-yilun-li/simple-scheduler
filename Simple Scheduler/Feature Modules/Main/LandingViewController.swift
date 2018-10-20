@@ -35,15 +35,20 @@ class LandingViewController: UIViewController {
     
     private lazy var getTaskButton = makeButton(StringStore.getTask)
     
-    lazy var friendlyTipLabel: UILabel = {
-        let label = UILabel(frame: .zero)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = theme.fonts.smallItalicized
-        label.textColor = theme.colours.mainTextColor
-        label.layer.opacity = Constants.friendlyTipOpacity
-        label.numberOfLines = 0
-        label.textAlignment = .center
-        return label
+    lazy var friendlyTipButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle(nil, for: .normal)
+        button.titleLabel!.font = theme.fonts.smallItalicized
+        button.setTitleColor(theme.colours.mainTextColor, for: .normal)
+        button.layer.opacity = Constants.friendlyTipOpacity
+        button.setTitleShadowColor(theme.colours.mainTextColor.withAlphaComponent(0.25), for: .normal)
+        button.titleLabel?.shadowOffset = CGSize(width: 0, height: 1)
+        button.titleLabel?.lineBreakMode = .byWordWrapping
+        button.titleLabel?.textAlignment = .center
+
+        button.addTarget(presenter, action: #selector(LandingPresenter.didPressFriendlyTip(_:)), for: .touchUpInside)
+        return button
     }()
     
     lazy var taskStoreLabel: UILabel = {
@@ -97,8 +102,8 @@ class LandingViewController: UIViewController {
         NSLayoutConstraint.activate([
             taskStoreLabel.bottomAnchor.constraint(equalTo: viewForEmbedding.topAnchor, constant: -Constants.defaultSpacing * 2),
             getTaskButton.topAnchor.constraint(equalTo: viewForEmbedding.bottomAnchor, constant: Constants.defaultSpacing * 2),
-            viewForEmbedding.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
-            viewForEmbedding.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor)
+            viewForEmbedding.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing * 1.5),
+            viewForEmbedding.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing * 1.5)
         ])
     }
 }
@@ -114,11 +119,11 @@ private extension LandingViewController {
         view.addSubview(taskStoreLabel)
         view.addSubview(welcomeLabel)
         view.addSubview(settingsButton)
-        view.addSubview(friendlyTipLabel)
+        view.addSubview(friendlyTipButton)
         
         presenter.addContentController(EnterTaskViewController(dependencies: dependencies))
         presenter.updateStoreDescription(0)
-        presenter.updateFriendlyTipLabel()
+        presenter.updateFriendlyTipButton()
         
         settingsButton.addTarget(presenter, action: #selector(presenter.didPressSettings), for: .touchUpInside)
         getTaskButton.addTarget(presenter, action: #selector(presenter.didPressGetTask), for: .touchUpInside)
@@ -133,11 +138,11 @@ private extension LandingViewController {
             settingsButton.centerYAnchor.constraint(equalTo: welcomeLabel.centerYAnchor),
             settingsButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing),
             
-            friendlyTipLabel.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: 2 * Constants.defaultSpacing),
-            friendlyTipLabel.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
-            friendlyTipLabel.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor),
+            friendlyTipButton.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: 2 * Constants.defaultSpacing),
+            friendlyTipButton.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
+            friendlyTipButton.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor),
 
-            taskStoreLabel.topAnchor.constraint(equalTo: friendlyTipLabel.bottomAnchor, constant: 2 * Constants.defaultSpacing),
+            taskStoreLabel.topAnchor.constraint(equalTo: friendlyTipButton.bottomAnchor, constant: 2 * Constants.defaultSpacing),
             taskStoreLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing),
             taskStoreLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.defaultSpacing),
             taskStoreLabel.bottomAnchor.constraint(lessThanOrEqualTo: getTaskButton.topAnchor, constant: -Constants.defaultSpacing),

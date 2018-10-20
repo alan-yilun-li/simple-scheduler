@@ -30,8 +30,8 @@ class LandingPresenter: NSObject {
         viewController?.taskStoreLabel.text = "\(StringStore.taskStoreDescriptionPart1) \(items) \(StringStore.taskStoreDescriptionPart2)"
     }
     
-    func updateFriendlyTipLabel() {
-        viewController?.friendlyTipLabel.text = StringStore.friendlyTips.randomElement()
+    func updateFriendlyTipButton() {
+        viewController?.friendlyTipButton.setTitle( StringStore.friendlyTips.randomElement(), for: .normal)
     }
 }
 
@@ -55,6 +55,10 @@ extension LandingPresenter {
     
     @objc func didPressGetTask(_ sender: UIButton) {
 
+    }
+    
+    @objc func didPressFriendlyTip(_ sender: UIButton) {
+        
     }
 }
 

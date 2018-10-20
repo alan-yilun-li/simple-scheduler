@@ -24,7 +24,7 @@ struct StringStore {
     static let scheduler = NSLocalizedString("Scheduler", comment: "scheduler")
     
     // Landing Page
-    static let hello = NSLocalizedString("Hello!", comment: "hello")
+    static let hello = NSLocalizedString("Hello! 😊", comment: "hello")
     static let enterTask = NSLocalizedString("Enter Task", comment: "enter task")
     static let getTask = NSLocalizedString("Get Task" , comment: "get task")
     static let taskStoreDescriptionPart1 = NSLocalizedString("You've got", comment: "part1 task decsription")
