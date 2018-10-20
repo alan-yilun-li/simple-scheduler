@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TaskActionViewController: UIViewController {
+class EnterTaskViewController: UIViewController {
     
     private struct Constants {
         static let defaultSpacing: CGFloat = 16.0
@@ -29,6 +29,7 @@ class TaskActionViewController: UIViewController {
         control.insertSegment(withTitle: "Medium", at: 1, animated: false)
         control.insertSegment(withTitle: "Difficult", at: 2, animated: false)
         control.selectedSegmentIndex = 0
+        control.setTitleTextAttributes([NSAttributedString.Key.font: theme.fonts.standard], for: .normal)
         control.translatesAutoresizingMaskIntoConstraints = false
         control.backgroundColor = theme.colours.mainColor
         control.tintColor = theme.colours.secondaryColor
@@ -73,7 +74,7 @@ class TaskActionViewController: UIViewController {
         let buttonHeight = lineHeight * Constants.buttonLineHeightPercentage
         NSLayoutConstraint.activate([
             button.heightAnchor.constraint(equalToConstant: buttonHeight),
-            ])
+        ])
         button.layer.cornerRadius = buttonHeight / 2
         button.layer.borderWidth = Constants.buttonBorderWidth
         
@@ -82,21 +83,6 @@ class TaskActionViewController: UIViewController {
         
         button.addTarget(self, action: #selector(actionButtonPressed), for: .touchUpInside)
         
-        return button
-    }()
-    
-    private lazy var cancelButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        
-        button.setTitle("x", for: .normal)
-        button.setTitleColor(theme.colours.mainGrey, for: .normal)
-        button.titleLabel?.font = theme.fonts.standard
-        
-        button.layer.shadowOpacity = 0.2
-        button.layer.shadowOffset = CGSize(width: 1, height: 1)
-        button.addTarget(self, action: #selector(pop), for: .touchUpInside)
-
         return button
     }()
     
@@ -123,7 +109,7 @@ class TaskActionViewController: UIViewController {
 }
 
 // MARK: - Actions
-extension TaskActionViewController {
+extension EnterTaskViewController {
     
     @objc func actionButtonPressed() {
         pop()
@@ -131,7 +117,7 @@ extension TaskActionViewController {
 }
 
 // MARK: - View Setup
-private extension TaskActionViewController {
+private extension EnterTaskViewController {
     
     func setupViews() {
         
@@ -144,7 +130,6 @@ private extension TaskActionViewController {
         view.layer.shadowRadius = 10
         view.layer.shouldRasterize = true
 
-        view.addSubview(cancelButton)
         view.addSubview(acceptButton)
         view.addSubview(timePicker)
         view.addSubview(timeLabel)
@@ -154,10 +139,6 @@ private extension TaskActionViewController {
     func setupConstraints() {
         
         NSLayoutConstraint.activate([
-            cancelButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing),
-            cancelButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            
-            
             timeLabel.centerYAnchor.constraint(equalTo: timePicker.centerYAnchor),
             timeLabel.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
             timeLabel.widthAnchor.constraint(lessThanOrEqualTo: view.widthAnchor, multiplier: 2/5),

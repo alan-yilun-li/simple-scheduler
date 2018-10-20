@@ -15,6 +15,8 @@ class LandingPresenter: NSObject {
     // Remembering last pressed button for the viewExpansionAnimator
     private var pressedExpandableButton: UIButton!
     
+    var currentContentVC: UIViewController?
+    
     private let dependencies: AYLDependencies
     private var theme: AYLTheme {
         return dependencies.defaults.selectedTheme
@@ -29,8 +31,7 @@ class LandingPresenter: NSObject {
     }
     
     func updateFriendlyTipLabel() {
-        // TODO ayl: replace with random after updating to swift 4.2
-        viewController?.friendlyTipLabel.text = StringStore.friendlyTips.first!
+        viewController?.friendlyTipLabel.text = StringStore.friendlyTips.randomElement()
     }
 }
 
@@ -38,11 +39,14 @@ class LandingPresenter: NSObject {
 extension LandingPresenter {
     
     @objc func didPressEnterTask(_ sender: UIButton) {
-        pressedExpandableButton = sender
-        let presentedVC = TaskActionViewController(dependencies: dependencies)
-        presentedVC.transitioningDelegate = self
-        presentedVC.modalPresentationStyle = .custom
-        viewController?.present(presentedVC, animated: true, completion: nil)
+        if let currentContentVC = currentContentVC {
+            guard type(of: currentContentVC) != EnterTaskViewController.self else {
+                return
+            }
+            removeContentController(currentContentVC)
+        }
+        let contentVC = EnterTaskViewController(dependencies: dependencies)
+        addContentController(contentVC)
     }
     
     @objc func didPressSettings(_ sender: UIButton) {
@@ -50,35 +54,26 @@ extension LandingPresenter {
     }
     
     @objc func didPressGetTask(_ sender: UIButton) {
-        pressedExpandableButton = sender
-        let presentedVC = TaskActionViewController(dependencies: dependencies)
-        presentedVC.transitioningDelegate = self
-        presentedVC.modalPresentationStyle = .custom
-        viewController?.present(presentedVC, animated: true, completion: nil)
 
     }
 }
 
-// MARK: - Presentation Methods
+// MARK: - View Changing Methods
 extension LandingPresenter: UIViewControllerTransitioningDelegate {
     
-    func presentationController(
-        forPresented presented: UIViewController,
-        presenting: UIViewController?,
-        source: UIViewController
-    ) -> UIPresentationController? {
-        return PopupPresentationController(presentedViewController: presented, presenting: presenting)
+    func addContentController(_ child: UIViewController) {
+        guard let vc = viewController else { return }
+        vc.addChild(child)
+        vc.embedViewInCenter(child.view)
+        child.didMove(toParent: vc)
+        currentContentVC = child
     }
     
-    func animationController(
-        forPresented presented: UIViewController,
-        presenting: UIViewController,
-        source: UIViewController
-    ) -> UIViewControllerAnimatedTransitioning? {
-        return nil // ViewExpansionAnimator(isPresenting: true, fromView: pressedExpandableButton)
+    func removeContentController(_ child: UIViewController) {
+        child.willMove(toParent: nil)
+        child.view.removeFromSuperview()
+        child.removeFromParent()
+        currentContentVC = nil
     }
-    
-    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return nil // ViewExpansionAnimator(isPresenting: false, fromView: pressedExpandableButton)
-    }
+
 }

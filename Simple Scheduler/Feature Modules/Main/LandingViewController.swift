@@ -33,7 +33,6 @@ class LandingViewController: UIViewController {
         return dependencies.defaults.selectedTheme
     }
     
-    private lazy var enterTaskButton = makeButton(StringStore.enterTask)
     private lazy var getTaskButton = makeButton(StringStore.getTask)
     
     lazy var friendlyTipLabel: UILabel = {
@@ -91,6 +90,17 @@ class LandingViewController: UIViewController {
         setupViews()
         setupConstraints()
     }
+    
+    func embedViewInCenter(_ viewForEmbedding: UIView) {
+        view.addSubview(viewForEmbedding)
+        viewForEmbedding.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            taskStoreLabel.bottomAnchor.constraint(equalTo: viewForEmbedding.topAnchor, constant: -Constants.defaultSpacing * 2),
+            getTaskButton.topAnchor.constraint(equalTo: viewForEmbedding.bottomAnchor, constant: Constants.defaultSpacing * 2),
+            viewForEmbedding.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
+            viewForEmbedding.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor)
+        ])
+    }
 }
 
 // MARK: - View Setup
@@ -98,21 +108,18 @@ private extension LandingViewController {
     
     func setupViews() {
         view.backgroundColor = theme.colours.mainColor
-        
-        theme(enterTaskButton, theme.colours.mainTextColor, backgroundColor: theme.colours.mainColor, withBorder: true)
         theme(getTaskButton, theme.colours.mainColor, backgroundColor: theme.colours.secondaryColor)
         
-        view.addSubview(enterTaskButton)
         view.addSubview(getTaskButton)
         view.addSubview(taskStoreLabel)
         view.addSubview(welcomeLabel)
         view.addSubview(settingsButton)
         view.addSubview(friendlyTipLabel)
         
+        presenter.addContentController(EnterTaskViewController(dependencies: dependencies))
         presenter.updateStoreDescription(0)
         presenter.updateFriendlyTipLabel()
         
-        enterTaskButton.addTarget(presenter, action: #selector(presenter.didPressEnterTask), for: .touchUpInside)
         settingsButton.addTarget(presenter, action: #selector(presenter.didPressSettings), for: .touchUpInside)
         getTaskButton.addTarget(presenter, action: #selector(presenter.didPressGetTask), for: .touchUpInside)
     }
@@ -133,19 +140,12 @@ private extension LandingViewController {
             taskStoreLabel.topAnchor.constraint(equalTo: friendlyTipLabel.bottomAnchor, constant: 2 * Constants.defaultSpacing),
             taskStoreLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing),
             taskStoreLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.defaultSpacing),
-            taskStoreLabel.bottomAnchor.constraint(lessThanOrEqualTo: enterTaskButton.topAnchor, constant: -Constants.defaultSpacing),
-
-            enterTaskButton.topAnchor.constraint(greaterThanOrEqualTo: welcomeLabel.bottomAnchor),
-            enterTaskButton.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
-            enterTaskButton.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor),
+            taskStoreLabel.bottomAnchor.constraint(lessThanOrEqualTo: getTaskButton.topAnchor, constant: -Constants.defaultSpacing),
 
             getTaskButton.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
             getTaskButton.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor),
-            getTaskButton.topAnchor.constraint(equalTo: enterTaskButton.bottomAnchor, constant: Constants.defaultSpacing),
             getTaskButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Constants.defaultSpacing),
             
-            // explicit sizing
-            enterTaskButton.widthAnchor.constraint(equalTo: view.widthAnchor).withMultiplier(Constants.buttonWidthProportion),
             getTaskButton.widthAnchor.constraint(equalTo: view.widthAnchor).withMultiplier(Constants.buttonWidthProportion)
         ])
     }

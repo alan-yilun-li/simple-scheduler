@@ -26,7 +26,7 @@
 		E7F04C0C2176E9C800FD6B96 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7F04C0B2176E9C800FD6B96 /* Task.swift */; };
 		E7F04C102176EC1600FD6B96 /* CoreData+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7F04C0F2176EC1600FD6B96 /* CoreData+Helpers.swift */; };
 		E7F04C122176EDA000FD6B96 /* Managed.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7F04C112176EDA000FD6B96 /* Managed.swift */; };
-		E7F04C162177016F00FD6B96 /* TaskActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7F04C152177016F00FD6B96 /* TaskActionViewController.swift */; };
+		E7F04C162177016F00FD6B96 /* EnterTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7F04C152177016F00FD6B96 /* EnterTaskViewController.swift */; };
 		E7FFEAFA216A8243001CE6AD /* BlankNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7FFEAF9216A8243001CE6AD /* BlankNavigationController.swift */; };
 		E7FFEB02216AB120001CE6AD /* LandingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7FFEB01216AB120001CE6AD /* LandingViewController.swift */; };
 		E7FFEB04216AB87C001CE6AD /* NSLayoutConstraint+Multiplier.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7FFEB03216AB87C001CE6AD /* NSLayoutConstraint+Multiplier.swift */; };
@@ -55,7 +55,7 @@
 		E7F04C0B2176E9C800FD6B96 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		E7F04C0F2176EC1600FD6B96 /* CoreData+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreData+Helpers.swift"; sourceTree = "<group>"; };
 		E7F04C112176EDA000FD6B96 /* Managed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Managed.swift; sourceTree = "<group>"; };
-		E7F04C152177016F00FD6B96 /* TaskActionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskActionViewController.swift; sourceTree = "<group>"; };
+		E7F04C152177016F00FD6B96 /* EnterTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnterTaskViewController.swift; sourceTree = "<group>"; };
 		E7FFEAF9216A8243001CE6AD /* BlankNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlankNavigationController.swift; sourceTree = "<group>"; };
 		E7FFEB01216AB120001CE6AD /* LandingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingViewController.swift; sourceTree = "<group>"; };
 		E7FFEB03216AB87C001CE6AD /* NSLayoutConstraint+Multiplier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint+Multiplier.swift"; sourceTree = "<group>"; };
@@ -155,7 +155,7 @@
 		E77C584821695C550028D1B6 /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				E7F04C152177016F00FD6B96 /* TaskActionViewController.swift */,
+				E7F04C152177016F00FD6B96 /* EnterTaskViewController.swift */,
 				E7FFEB01216AB120001CE6AD /* LandingViewController.swift */,
 				E7FFEB05216ABE8E001CE6AD /* LandingPresenter.swift */,
 			);
@@ -298,7 +298,7 @@
 			files = (
 				E7CA5940216E4DBA005B3ED6 /* PopupPresentationController.swift in Sources */,
 				E71675D4216949A1004BA952 /* StringStore.swift in Sources */,
-				E7F04C162177016F00FD6B96 /* TaskActionViewController.swift in Sources */,
+				E7F04C162177016F00FD6B96 /* EnterTaskViewController.swift in Sources */,
 				E71B86F421693BA3007CB3FC /* UserDefaults+Keys.swift in Sources */,
 				E7FFEB06216ABE8E001CE6AD /* LandingPresenter.swift in Sources */,
 				E7FFEB02216AB120001CE6AD /* LandingViewController.swift in Sources */,
