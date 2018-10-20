@@ -26,8 +26,8 @@ class LandingPresenter: NSObject {
         self.dependencies = dependencies
     }
     
-    func updateStoreDescription(_ items: Int) {
-        viewController?.taskStoreLabel.text = "\(StringStore.taskStoreDescriptionPart1) \(items) \(StringStore.taskStoreDescriptionPart2)"
+    func updateStoreDescription(_ tasksPlanned: Int, _ tasksCompleted: Int) {
+        viewController?.taskStoreLabel.text = "\(StringStore.taskStoreDescriptionPart1) \(tasksPlanned) \(StringStore.taskStoreDescriptionPart2), \(tasksCompleted) completed."
     }
     
     func updateFriendlyTipButton() {

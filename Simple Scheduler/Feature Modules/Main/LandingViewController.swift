@@ -42,8 +42,8 @@ class LandingViewController: UIViewController {
         button.titleLabel!.font = theme.fonts.smallItalicized
         button.setTitleColor(theme.colours.mainTextColor, for: .normal)
         button.layer.opacity = Constants.friendlyTipOpacity
-        button.setTitleShadowColor(theme.colours.mainTextColor.withAlphaComponent(0.25), for: .normal)
-        button.titleLabel?.shadowOffset = CGSize(width: 0, height: 1)
+        button.setTitleShadowColor(theme.colours.mainTextColor.withAlphaComponent(0.1), for: .normal)
+        button.titleLabel?.shadowOffset = CGSize(width: 2, height: 2)
         button.titleLabel?.lineBreakMode = .byWordWrapping
         button.titleLabel?.textAlignment = .center
 
@@ -56,6 +56,7 @@ class LandingViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = theme.fonts.small
         label.textColor = theme.colours.mainTextColor
+        label.numberOfLines = 0 
         return label
     }()
     
@@ -122,7 +123,7 @@ private extension LandingViewController {
         view.addSubview(friendlyTipButton)
         
         presenter.addContentController(EnterTaskViewController(dependencies: dependencies))
-        presenter.updateStoreDescription(0)
+        presenter.updateStoreDescription(0, 0)
         presenter.updateFriendlyTipButton()
         
         settingsButton.addTarget(presenter, action: #selector(presenter.didPressSettings), for: .touchUpInside)
