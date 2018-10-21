@@ -10,10 +10,14 @@ import UIKit
 
 class EnterTaskViewController: UIViewController {
     
+    private enum TaskPartTag: Int {
+        case name, difficulty, time, enter
+    }
+    
     private struct Constants {
         static let defaultSpacing: CGFloat = 16.0
         
-        static let buttonBorderWidth: CGFloat = 2.0
+        static let buttonBorderWidth: CGFloat = 3.5
         static let buttonLineHeightPercentage: CGFloat = 2.0
         static let buttonWidthProportion: CGFloat = 0.75
     }
@@ -31,7 +35,7 @@ class EnterTaskViewController: UIViewController {
     }
     
     override var inputAccessoryView: UIView? {
-        return timeInputDoneToolbar
+        return isFirstResponder ? timeInputDoneToolbar : nil
     }
     
     lazy var titleLabel: UILabel = {
@@ -39,7 +43,7 @@ class EnterTaskViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = theme.fonts.small
         label.textColor = theme.colours.mainTextColor
-        label.text = "✏️ Enter Task"
+        label.text = "📬 Enter Task"
         return label
     }()
     
@@ -56,17 +60,30 @@ class EnterTaskViewController: UIViewController {
         return true
     }
     
+    private lazy var pickNameButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.tag = TaskPartTag.name.rawValue
+        customizeButtonFontAndShape(button)
+        button.setTitle("✏️ Task Name", for: .normal)
+        button.addTarget(self, action: #selector(pickNamePressed), for: .touchUpInside)
+        return button
+    }()
+    
+    private lazy var taskNameField: UITextField = {
+        let textField = UITextField(frame: .zero)
+        textField.placeholder = "Short Description Here!"
+        textField.font = theme.fonts.standard
+        textField.textColor = theme.colours.mainTextColor
+        textField.textAlignment = .center
+        return textField
+    }()
+    
     private lazy var pickTimeButton: UIButton = {
         let button = UIButton(type: .system)
+        button.tag = TaskPartTag.time.rawValue
         customizeButtonFontAndShape(button)
-
         button.setTitle("⌛ Expected Time", for: .normal)
-
-        button.layer.shadowOpacity = 0.5
-        button.layer.shadowOffset = CGSize(width: 0, height: 1)
         button.addTarget(self, action: #selector(pickTimePressed), for: .touchUpInside)
-        
-        themeButton(button, false)
         return button
     }()
     
@@ -84,7 +101,6 @@ class EnterTaskViewController: UIViewController {
         
         return doneToolbar
     }()
-
     
     private lazy var timePicker: UIDatePicker = {
         let timePicker = UIDatePicker(frame: .zero)
@@ -96,18 +112,15 @@ class EnterTaskViewController: UIViewController {
     
     private lazy var enterTaskButton: UIButton = {
         let button = UIButton(type: .system)
-        customizeButtonFontAndShape(button)
-        
+        button.tag = TaskPartTag.enter.rawValue
+        customizeButtonFontAndShape(button, mainButton: true)
         button.setTitle(StringStore.enterTask, for: .normal)
-        button.layer.borderWidth = Constants.buttonBorderWidth
-        
-        button.layer.shadowOpacity = 0.5
-        button.layer.shadowOffset = CGSize(width: 3, height: 3)
-        
         button.addTarget(self, action: #selector(enterTaskPressed), for: .touchUpInside)
-        themeButton(button, false)
         return button
     }()
+    
+    /// Populated from `isolateTaskPart` to be able to restore the state when done.
+    private var restoreIsolatedStateInfo: (isolatedPart: TaskPartTag, removedViews: [UIView])?
     
     init(dependencies: AYLDependencies) {
         self.dependencies = dependencies
@@ -129,7 +142,20 @@ class EnterTaskViewController: UIViewController {
 // MARK: - Actions
 extension EnterTaskViewController {
     
-    @objc func pickTimePressed() {
+    @objc func pickNamePressed(_ sender: UIButton) {
+        guard let tag = TaskPartTag(rawValue: sender.tag) else {
+            assertionFailure("incorrect enum setup for task part tags")
+            return
+        }
+        isolateTaskPart(tag)
+        guard let nameButtonIndex = mainStackView.arrangedSubviews.firstIndex(of: pickNameButton) else {
+            assertionFailure("incorrect enum setup for task part tags")
+            return
+        }
+        mainStackView.insertArrangedSubview(taskNameField, at: nameButtonIndex + 1)
+    }
+    
+    @objc func pickTimePressed(_ sender: UIButton) {
         self.becomeFirstResponder()
     }
     
@@ -138,8 +164,37 @@ extension EnterTaskViewController {
         self.resignFirstResponder()
     }
     
-    @objc func enterTaskPressed() {
+    @objc func enterTaskPressed(_ sender: UIButton) {
         enterTaskButton.shake(withFlash: true)
+    }
+}
+
+// MARK: - Dynamic View Modification
+extension EnterTaskViewController {
+
+    private func isolateTaskPart(_ taskPart: TaskPartTag) {
+        // Cannot isolate when we already need to isolate
+        guard restoreIsolatedStateInfo == nil else { return }
+        var removedViews = [UIView]()
+        for part in mainStackView.arrangedSubviews where part.tag != taskPart.rawValue {
+            part.isHidden = true
+            removedViews.append(part)
+        }
+        restoreIsolatedStateInfo = (isolatedPart: taskPart, removedViews: removedViews)
+    }
+    
+    func restoreStateAfterIsolation() {
+        guard
+            let info = restoreIsolatedStateInfo,
+            mainStackView.arrangedSubviews.count >= 1,
+            mainStackView.arrangedSubviews.first!.tag == info.isolatedPart.rawValue
+        else {
+            return
+        }
+        for view in mainStackView.arrangedSubviews {
+            view.isHidden = false
+        }
+        restoreIsolatedStateInfo = nil
     }
 }
 
@@ -159,12 +214,12 @@ private extension EnterTaskViewController {
         view.addSubview(titleLabel)
 
         view.addSubview(mainStackView)
+        mainStackView.addArrangedSubview(pickNameButton)
         mainStackView.addArrangedSubview(pickTimeButton)
         mainStackView.addArrangedSubview(enterTaskButton)
     }
     
     func setupConstraints() {
-        
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: Constants.defaultSpacing),
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -186,7 +241,7 @@ private extension EnterTaskViewController {
         }
     }
     
-    func customizeButtonFontAndShape(_ button: UIButton) {
+    func customizeButtonFontAndShape(_ button: UIButton, mainButton: Bool = false) {
         button.titleLabel?.font = theme.fonts.standard
         
         guard let lineHeight = button.titleLabel?.font.lineHeight else {
@@ -198,5 +253,10 @@ private extension EnterTaskViewController {
             button.heightAnchor.constraint(equalToConstant: buttonHeight),
         ])
         button.layer.cornerRadius = buttonHeight / 2
+        button.layer.shadowOpacity = 0.5
+        button.layer.shadowOffset = !mainButton ? CGSize(width: 0, height: 1) : CGSize(width: 3, height: 3)
+
+        if mainButton { button.layer.borderWidth = Constants.buttonBorderWidth }
+        themeButton(button, false)
     }
 }
