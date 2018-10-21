@@ -13,7 +13,7 @@ class EnterTaskViewController: UIViewController {
     private struct Constants {
         static let defaultSpacing: CGFloat = 16.0
         
-        static let buttonBorderWidth: CGFloat = 3.0
+        static let buttonBorderWidth: CGFloat = 2.0
         static let buttonLineHeightPercentage: CGFloat = 2.0
         static let buttonWidthProportion: CGFloat = 0.75
     }
@@ -34,31 +34,39 @@ class EnterTaskViewController: UIViewController {
         return timeInputDoneToolbar
     }
     
+    lazy var titleLabel: UILabel = {
+        let label = UILabel(frame: .zero)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = theme.fonts.small
+        label.textColor = theme.colours.mainTextColor
+        label.text = "✏️ Enter Task"
+        return label
+    }()
+    
+    lazy var mainStackView: UIStackView = {
+        let stackView = UIStackView(frame: .zero)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+        stackView.spacing = Constants.defaultSpacing
+        stackView.distribution = .equalSpacing
+        return stackView
+    }()
+    
     override var canBecomeFirstResponder: Bool {
         return true
     }
     
     private lazy var pickTimeButton: UIButton = {
         let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("⌛ Set Time", for: .normal)
-        button.setTitleColor(theme.colours.mainColor, for: .normal)
-        button.titleLabel?.font = theme.fonts.standard
-        button.backgroundColor = theme.colours.secondaryColor
-        
-        guard let lineHeight = button.titleLabel?.font.lineHeight else {
-            assertionFailure("titlelabel of button doesn't exist")
-            return button
-        }
-        let buttonHeight = lineHeight * Constants.buttonLineHeightPercentage
-        NSLayoutConstraint.activate([
-            button.heightAnchor.constraint(equalToConstant: buttonHeight),
-        ])
-        button.layer.cornerRadius = buttonHeight / 2
+        customizeButtonFontAndShape(button)
+
+        button.setTitle("⌛ Expected Time", for: .normal)
 
         button.layer.shadowOpacity = 0.5
         button.layer.shadowOffset = CGSize(width: 0, height: 1)
         button.addTarget(self, action: #selector(pickTimePressed), for: .touchUpInside)
+        
+        themeButton(button, false)
         return button
     }()
     
@@ -88,29 +96,16 @@ class EnterTaskViewController: UIViewController {
     
     private lazy var enterTaskButton: UIButton = {
         let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
+        customizeButtonFontAndShape(button)
         
         button.setTitle(StringStore.enterTask, for: .normal)
-        button.setTitleColor(theme.colours.mainTextColor, for: .normal)
-        button.titleLabel?.font = theme.fonts.standard
-        
-        button.backgroundColor = theme.colours.mainColor
-        guard let lineHeight = button.titleLabel?.font.lineHeight else {
-            assertionFailure("titlelabel of button doesn't exist")
-            return button
-        }
-        let buttonHeight = lineHeight * Constants.buttonLineHeightPercentage
-        NSLayoutConstraint.activate([
-            button.heightAnchor.constraint(equalToConstant: buttonHeight),
-        ])
-        button.layer.cornerRadius = buttonHeight / 2
         button.layer.borderWidth = Constants.buttonBorderWidth
         
         button.layer.shadowOpacity = 0.5
         button.layer.shadowOffset = CGSize(width: 3, height: 3)
         
         button.addTarget(self, action: #selector(enterTaskPressed), for: .touchUpInside)
-        
+        themeButton(button, false)
         return button
     }()
     
@@ -152,7 +147,6 @@ extension EnterTaskViewController {
 private extension EnterTaskViewController {
     
     func setupViews() {
-        
         view.backgroundColor = UIColor.white
         view.layer.masksToBounds = false
         
@@ -161,25 +155,48 @@ private extension EnterTaskViewController {
         view.layer.shadowOffset = CGSize(width: 3, height: 3)
         view.layer.shadowRadius = 10
         view.layer.shouldRasterize = true
+        
+        view.addSubview(titleLabel)
 
-        view.addSubview(enterTaskButton)
-//        view.addSubview(difficultyControl)
-        view.addSubview(pickTimeButton)
+        view.addSubview(mainStackView)
+        mainStackView.addArrangedSubview(pickTimeButton)
+        mainStackView.addArrangedSubview(enterTaskButton)
     }
     
     func setupConstraints() {
         
         NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: Constants.defaultSpacing),
+            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
-            pickTimeButton.bottomAnchor.constraint(equalTo: enterTaskButton.topAnchor, constant: -Constants.defaultSpacing),
-            pickTimeButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing),
-            pickTimeButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing),
-            
-            enterTaskButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
-                                                 constant: -Constants.defaultSpacing),
-
-            enterTaskButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing),
-            enterTaskButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing)
+            mainStackView.topAnchor.constraint(lessThanOrEqualTo: titleLabel.bottomAnchor, constant: Constants.defaultSpacing),
+            mainStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -Constants.defaultSpacing),
+            mainStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing),
+            mainStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing)
         ])
+    }
+    
+    func themeButton(_ button: UIButton, _ filled: Bool) {
+        if filled {
+            button.setTitleColor(theme.colours.mainColor, for: .normal)
+            button.backgroundColor = theme.colours.secondaryColor
+        } else {
+            button.setTitleColor(theme.colours.secondaryColor, for: .normal)
+            button.backgroundColor = theme.colours.mainColor
+        }
+    }
+    
+    func customizeButtonFontAndShape(_ button: UIButton) {
+        button.titleLabel?.font = theme.fonts.standard
+        
+        guard let lineHeight = button.titleLabel?.font.lineHeight else {
+            assertionFailure("titlelabel of button doesn't exist")
+            return
+        }
+        let buttonHeight = lineHeight * Constants.buttonLineHeightPercentage
+        NSLayoutConstraint.activate([
+            button.heightAnchor.constraint(equalToConstant: buttonHeight),
+        ])
+        button.layer.cornerRadius = buttonHeight / 2
     }
 }
