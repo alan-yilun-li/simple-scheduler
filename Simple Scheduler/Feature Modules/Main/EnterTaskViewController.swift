@@ -38,20 +38,6 @@ class EnterTaskViewController: UIViewController {
         return true
     }
     
-//    private lazy var difficultyControl: UISegmentedControl = {
-//        let control = UISegmentedControl(frame: .zero)
-//        control.insertSegment(withTitle: "Easy", at: 0, animated: false)
-//        control.insertSegment(withTitle: "Medium", at: 1, animated: false)
-//        control.insertSegment(withTitle: "Difficult", at: 2, animated: false)
-//        control.selectedSegmentIndex = 0
-//        control.setTitleTextAttributes([NSAttributedString.Key.font: theme.fonts.standard], for: .normal)
-//        control.translatesAutoresizingMaskIntoConstraints = false
-//        control.backgroundColor = theme.colours.mainColor
-//        control.tintColor = theme.colours.secondaryColor
-//
-//        return control
-//    }()
-    
     private lazy var pickTimeButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -78,7 +64,7 @@ class EnterTaskViewController: UIViewController {
     
     private lazy var timeInputDoneToolbar: UIToolbar = {
         let doneToolbar: UIToolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
-        doneToolbar.barStyle = .black
+        doneToolbar.barStyle = .blackOpaque
         
         let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let doneButton: UIBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(timeInputDidPressDone))
@@ -94,14 +80,13 @@ class EnterTaskViewController: UIViewController {
     
     private lazy var timePicker: UIDatePicker = {
         let timePicker = UIDatePicker(frame: .zero)
-//        timePicker.translatesAutoresizingMaskIntoConstraints = false
         timePicker.datePickerMode = .countDownTimer
         timePicker.minuteInterval = 5
         
         return timePicker
     }()
     
-    private lazy var acceptButton: UIButton = {
+    private lazy var enterTaskButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         
@@ -159,6 +144,7 @@ extension EnterTaskViewController {
     }
     
     @objc func enterTaskPressed() {
+        enterTaskButton.shake(withFlash: true)
     }
 }
 
@@ -176,7 +162,7 @@ private extension EnterTaskViewController {
         view.layer.shadowRadius = 10
         view.layer.shouldRasterize = true
 
-        view.addSubview(acceptButton)
+        view.addSubview(enterTaskButton)
 //        view.addSubview(difficultyControl)
         view.addSubview(pickTimeButton)
     }
@@ -184,20 +170,16 @@ private extension EnterTaskViewController {
     func setupConstraints() {
         
         NSLayoutConstraint.activate([
-//            difficultyControl.topAnchor.constraint(equalTo: view.topAnchor),
-//            difficultyControl.bottomAnchor.constraint(equalTo: pickTimeButton.topAnchor, constant: -Constants.defaultSpacing),
-//            difficultyControl.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing),
-//            difficultyControl.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing),
             
-            pickTimeButton.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: -Constants.defaultSpacing),
+            pickTimeButton.bottomAnchor.constraint(equalTo: enterTaskButton.topAnchor, constant: -Constants.defaultSpacing),
             pickTimeButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing),
             pickTimeButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing),
             
-            acceptButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+            enterTaskButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
                                                  constant: -Constants.defaultSpacing),
 
-            acceptButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing),
-            acceptButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing)
+            enterTaskButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing),
+            enterTaskButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing)
         ])
     }
 }

@@ -37,9 +37,11 @@ class LandingViewController: UIViewController {
     lazy var containerScrollView: UIScrollView = {
         let scrollView = UIScrollView(frame: .zero)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.isScrollEnabled = false 
+        scrollView.isScrollEnabled = false
+        scrollView.contentInsetAdjustmentBehavior = .never
         return scrollView
     }()
+    var scrollViewBottomConstraint: NSLayoutConstraint!
     
     lazy var friendlyTipButton: UIButton = {
         let button = UIButton(type: .system)
@@ -103,6 +105,11 @@ class LandingViewController: UIViewController {
         setupConstraints()
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        containerScrollView.contentSize = view.frame.size
+    }
+    
     func embedViewInCenter(_ viewForEmbedding: UIView) {
         containerScrollView.addSubview(viewForEmbedding)
         viewForEmbedding.translatesAutoresizingMaskIntoConstraints = false
@@ -141,6 +148,8 @@ private extension LandingViewController {
         getTaskButton.addTarget(presenter, action: #selector(presenter.didPressGetTask), for: .touchUpInside)
         
         NotificationCenter.default.addObserver(presenter, selector: #selector(LandingPresenter.keyboardWillChange), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+        
+        NotificationCenter.default.addObserver(presenter, selector: #selector(LandingPresenter.keyboardWillChange), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     func setupConstraints() {
@@ -152,16 +161,18 @@ private extension LandingViewController {
         highPriorityConstraints.forEach { $0.priority = .required }
         
         // ScrollView Constraints
+        scrollViewBottomConstraint = containerScrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+
         NSLayoutConstraint.activate([
             containerScrollView.topAnchor.constraint(equalTo: view.topAnchor),
             containerScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             containerScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            containerScrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            scrollViewBottomConstraint
         ])
-        
+
         // General Constraints
         NSLayoutConstraint.activate([
-            welcomeLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.defaultSpacing),
+            welcomeLabel.topAnchor.constraint(equalTo: containerScrollView.safeAreaLayoutGuide.topAnchor, constant: Constants.defaultSpacing),
             welcomeLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing),
             welcomeLabel.trailingAnchor.constraint(lessThanOrEqualTo: settingsButton.leadingAnchor, constant: -Constants.defaultSpacing),
             
@@ -177,7 +188,7 @@ private extension LandingViewController {
 
             getTaskButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing * 2.5),
             getTaskButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing * 2.5),
-            getTaskButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Constants.defaultSpacing)
+            getTaskButton.bottomAnchor.constraint(equalTo: containerScrollView.safeAreaLayoutGuide.bottomAnchor, constant: -Constants.defaultSpacing)
         ] + highPriorityConstraints)
     }
     

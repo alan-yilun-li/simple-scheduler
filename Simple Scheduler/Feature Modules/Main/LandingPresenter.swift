@@ -54,7 +54,7 @@ extension LandingPresenter {
     }
     
     @objc func didPressGetTask(_ sender: UIButton) {
-
+        sender.shake()
     }
     
     @objc func didPressFriendlyTip(_ sender: UIButton) {
@@ -68,8 +68,14 @@ extension LandingPresenter {
             let keyboardScreenEndFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else {
                 return
         }
-        landingVC.containerScrollView.contentInset.bottom = keyboardScreenEndFrame.height
-        landingVC.containerScrollView.setNeedsLayout()
+        if notif.name == UIResponder.keyboardWillHideNotification {
+            landingVC.scrollViewBottomConstraint.constant = 0
+        } else {
+            landingVC.scrollViewBottomConstraint.constant = -keyboardScreenEndFrame.height
+        }
+        UIView.animate(withDuration: 0.5) {
+            landingVC.view.layoutIfNeeded()
+        }
     }
 }
 
