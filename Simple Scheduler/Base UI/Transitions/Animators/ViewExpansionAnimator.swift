@@ -4,133 +4,133 @@
 //
 //  Created by Alan Li on 10/9/18.
 //
-
-import UIKit
-
-protocol ViewExpansionAnimatable: NSCopying where Self: UIView {}
-
-class ViewExpansionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
-
-    private struct Constants {
-        static let presentingDuration: TimeInterval = 0.5
-        static let dismissalDuration: TimeInterval = 0.5
-    }
-
-    let isPresenting: Bool
-    private let copyFromView: UIView
-
-    init<FromView: ViewExpansionAnimatable>(isPresenting: Bool, fromView: FromView) {
-        self.isPresenting = isPresenting
-
-        guard let copyView = fromView.copy() as? UIView else {
-            assertionFailure("Protocol mandates something should be uiview but it's not")
-            self.copyFromView = fromView
-            return
-        }
-        self.copyFromView = copyView
-        copyFromView.frame = fromView.frame
-    }
-
-    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return isPresenting ? Constants.presentingDuration : Constants.dismissalDuration
-    }
-
-    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        let containerView = transitionContext.containerView
-        let toVC = transitionContext.viewController(forKey: .to)
-        var toView = transitionContext.view(forKey: .to)
-        let fromVC = transitionContext.viewController(forKey: .from)
-        let fromView = transitionContext.view(forKey: .from)
-        
-        let containerFrame = containerView.frame
-        var toViewStartFrame = transitionContext.initialFrame(for: toVC!)
-        let toViewFinalFrame = transitionContext.finalFrame(for: toVC!)
-        var fromViewFinalFrame = transitionContext.finalFrame(for: fromVC!)
-        
-        let toViewWasNil = toView == nil
-        
-        if toViewWasNil {
-            toView = toVC?.view
-        }
-        
-        if isPresenting {
-            toViewStartFrame.origin.x = containerFrame.size.width
-            toViewStartFrame.origin.y = containerFrame.size.height
-        }
-        else {
-            fromViewFinalFrame = CGRect(x: containerFrame.size.width,
-                                        y:     containerFrame.size.height,
-                                        width:      toView!.frame.size.width,
-                                        height:      toView!.frame.size.height)
-        }
-        
-        
-        let containerSuper = containerView.superview
-
-        
-        containerView.addSubview(toView!)
-        toView!.frame = toViewStartFrame
-        
-        UIView.animate(withDuration: transitionDuration(using: transitionContext),
-                       animations: {
-                        
-                        if self.isPresenting {
-                            toView?.frame = toViewFinalFrame
-                        } else {
-                            fromView?.frame = fromViewFinalFrame
-                        }
-        }) { _ in
-            transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
-            if toViewWasNil {
-                containerSuper?.addSubview(toView!)
-            }
-        }
-        
+//
+//import UIKit
+//
+//protocol ViewExpansionAnimatable: NSCopying where Self: UIView {}
+//
+//class ViewExpansionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
+//
+//    private struct Constants {
+//        static let presentingDuration: TimeInterval = 0.5
+//        static let dismissalDuration: TimeInterval = 0.5
+//    }
+//
+//    let isPresenting: Bool
+//    private let copyFromView: UIView
+//
+//    init<FromView: ViewExpansionAnimatable>(isPresenting: Bool, fromView: FromView) {
+//        self.isPresenting = isPresenting
+//
+//        guard let copyView = fromView.copy() as? UIView else {
+//            assertionFailure("Protocol mandates something should be uiview but it's not")
+//            self.copyFromView = fromView
+//            return
+//        }
+//        self.copyFromView = copyView
+//        copyFromView.frame = fromView.frame
+//    }
+//
+//    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+//        return isPresenting ? Constants.presentingDuration : Constants.dismissalDuration
+//    }
+//
+//    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
 //        let containerView = transitionContext.containerView
-//        guard let toView = transitionContext.view(forKey: .to) else {
-//            return
-//        }
-//        guard let fromView = transitionContext.view(forKey: .from) else {
-//            return
-//        }
+//        let toVC = transitionContext.viewController(forKey: .to)
+//        var toView = transitionContext.view(forKey: .to)
+//        let fromVC = transitionContext.viewController(forKey: .from)
+//        let fromView = transitionContext.view(forKey: .from)
 //
-//        if !isPresenting {
-//            containerView.addSubview(fromView)
-//            containerView.bringSubview(toFront: fromView)
-//            fromView.backgroundColor = .purple
-//        }
+//        let containerFrame = containerView.frame
+//        var toViewStartFrame = transitionContext.initialFrame(for: toVC!)
+//        let toViewFinalFrame = transitionContext.finalFrame(for: toVC!)
+//        var fromViewFinalFrame = transitionContext.finalFrame(for: fromVC!)
 //
-//        containerView.addSubview(copyFromView)
-//        containerView.bringSubview(toFront: copyFromView)
-//        let initialFrame = copyFromView.frame
-//        let finalFrame = toView.frame
+//        let toViewWasNil = toView == nil
+//
+//        if toViewWasNil {
+//            toView = toVC?.view
+//        }
 //
 //        if isPresenting {
-//            toView.frame = initialFrame
-//            containerView.addSubview(toView)
-//        } else {
-//            copyFromView.frame = finalFrame
+//            toViewStartFrame.origin.x = containerFrame.size.width
+//            toViewStartFrame.origin.y = containerFrame.size.height
+//        }
+//        else {
+//            fromViewFinalFrame = CGRect(x: containerFrame.size.width,
+//                                        y:     containerFrame.size.height,
+//                                        width:      toView!.frame.size.width,
+//                                        height:      toView!.frame.size.height)
 //        }
 //
-//        containerView.layoutIfNeeded()
 //
-//        UIView.animate(
-//            withDuration: isPresenting ? Constants.presentingDuration : Constants.dismissalDuration,
-//            delay:0.0,
-//            usingSpringWithDamping: 1.0,
-//            initialSpringVelocity: 0.0,
-//            animations: {
-//                if self.isPresenting {
-//                    toView.frame = finalFrame
-//                    self.copyFromView.frame = finalFrame
-//                } else {
-//                    toView.frame = initialFrame
-//                    self.copyFromView.frame = initialFrame
-//                }
-//        },
-//            completion:{_ in
-//                self.copyFromView.removeFromSuperview()
-//                transitionContext.completeTransition(true)
-//        })
-    }
-}
+//        let containerSuper = containerView.superview
+//
+//
+//        containerView.addSubview(toView!)
+//        toView!.frame = toViewStartFrame
+//
+//        UIView.animate(withDuration: transitionDuration(using: transitionContext),
+//                       animations: {
+//
+//                        if self.isPresenting {
+//                            toView?.frame = toViewFinalFrame
+//                        } else {
+//                            fromView?.frame = fromViewFinalFrame
+//                        }
+//        }) { _ in
+//            transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+//            if toViewWasNil {
+//                containerSuper?.addSubview(toView!)
+//            }
+//        }
+//
+////        let containerView = transitionContext.containerView
+////        guard let toView = transitionContext.view(forKey: .to) else {
+////            return
+////        }
+////        guard let fromView = transitionContext.view(forKey: .from) else {
+////            return
+////        }
+////
+////        if !isPresenting {
+////            containerView.addSubview(fromView)
+////            containerView.bringSubview(toFront: fromView)
+////            fromView.backgroundColor = .purple
+////        }
+////
+////        containerView.addSubview(copyFromView)
+////        containerView.bringSubview(toFront: copyFromView)
+////        let initialFrame = copyFromView.frame
+////        let finalFrame = toView.frame
+////
+////        if isPresenting {
+////            toView.frame = initialFrame
+////            containerView.addSubview(toView)
+////        } else {
+////            copyFromView.frame = finalFrame
+////        }
+////
+////        containerView.layoutIfNeeded()
+////
+////        UIView.animate(
+////            withDuration: isPresenting ? Constants.presentingDuration : Constants.dismissalDuration,
+////            delay:0.0,
+////            usingSpringWithDamping: 1.0,
+////            initialSpringVelocity: 0.0,
+////            animations: {
+////                if self.isPresenting {
+////                    toView.frame = finalFrame
+////                    self.copyFromView.frame = finalFrame
+////                } else {
+////                    toView.frame = initialFrame
+////                    self.copyFromView.frame = initialFrame
+////                }
+////        },
+////            completion:{_ in
+////                self.copyFromView.removeFromSuperview()
+////                transitionContext.completeTransition(true)
+////        })
+//    }
+//}

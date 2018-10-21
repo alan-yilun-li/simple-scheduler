@@ -23,35 +23,78 @@ class EnterTaskViewController: UIViewController {
         return dependencies.defaults.selectedTheme
     }
     
-    private lazy var difficultyControl: UISegmentedControl = {
-        let control = UISegmentedControl(frame: .zero)
-        control.insertSegment(withTitle: "Easy", at: 0, animated: false)
-        control.insertSegment(withTitle: "Medium", at: 1, animated: false)
-        control.insertSegment(withTitle: "Difficult", at: 2, animated: false)
-        control.selectedSegmentIndex = 0
-        control.setTitleTextAttributes([NSAttributedString.Key.font: theme.fonts.standard], for: .normal)
-        control.translatesAutoresizingMaskIntoConstraints = false
-        control.backgroundColor = theme.colours.mainColor
-        control.tintColor = theme.colours.secondaryColor
+    override var inputView: UIView? {
+        let input = timePicker
+        input.backgroundColor = theme.colours.mainColor
+        input.tintColor = theme.colours.secondaryColor
+        return input
+    }
+    
+    override var inputAccessoryView: UIView? {
+        return timeInputDoneToolbar
+    }
+    
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+    
+//    private lazy var difficultyControl: UISegmentedControl = {
+//        let control = UISegmentedControl(frame: .zero)
+//        control.insertSegment(withTitle: "Easy", at: 0, animated: false)
+//        control.insertSegment(withTitle: "Medium", at: 1, animated: false)
+//        control.insertSegment(withTitle: "Difficult", at: 2, animated: false)
+//        control.selectedSegmentIndex = 0
+//        control.setTitleTextAttributes([NSAttributedString.Key.font: theme.fonts.standard], for: .normal)
+//        control.translatesAutoresizingMaskIntoConstraints = false
+//        control.backgroundColor = theme.colours.mainColor
+//        control.tintColor = theme.colours.secondaryColor
+//
+//        return control
+//    }()
+    
+    private lazy var pickTimeButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("⌛ Set Time", for: .normal)
+        button.setTitleColor(theme.colours.mainColor, for: .normal)
+        button.titleLabel?.font = theme.fonts.standard
+        button.backgroundColor = theme.colours.secondaryColor
         
-        return control
+        guard let lineHeight = button.titleLabel?.font.lineHeight else {
+            assertionFailure("titlelabel of button doesn't exist")
+            return button
+        }
+        let buttonHeight = lineHeight * Constants.buttonLineHeightPercentage
+        NSLayoutConstraint.activate([
+            button.heightAnchor.constraint(equalToConstant: buttonHeight),
+        ])
+        button.layer.cornerRadius = buttonHeight / 2
+
+        button.layer.shadowOpacity = 0.5
+        button.layer.shadowOffset = CGSize(width: 0, height: 1)
+        button.addTarget(self, action: #selector(pickTimePressed), for: .touchUpInside)
+        return button
     }()
     
-    private lazy var timeLabel: UILabel = {
-        let label = UILabel(frame: .zero)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = theme.fonts.standard
-        label.textColor = theme.colours.mainTextColor
-        label.text = "Time Cost"
-        label.numberOfLines = 2
+    private lazy var timeInputDoneToolbar: UIToolbar = {
+        let doneToolbar: UIToolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        doneToolbar.barStyle = .black
         
-        return label
+        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let doneButton: UIBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(timeInputDidPressDone))
+        doneButton.tintColor = theme.colours.mainColor
+        
+        let items = [flexSpace, doneButton]
+        doneToolbar.items = items
+        doneToolbar.sizeToFit()
+        
+        return doneToolbar
     }()
 
     
     private lazy var timePicker: UIDatePicker = {
         let timePicker = UIDatePicker(frame: .zero)
-        timePicker.translatesAutoresizingMaskIntoConstraints = false
+//        timePicker.translatesAutoresizingMaskIntoConstraints = false
         timePicker.datePickerMode = .countDownTimer
         timePicker.minuteInterval = 5
         
@@ -81,7 +124,7 @@ class EnterTaskViewController: UIViewController {
         button.layer.shadowOpacity = 0.5
         button.layer.shadowOffset = CGSize(width: 3, height: 3)
         
-        button.addTarget(self, action: #selector(actionButtonPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(enterTaskPressed), for: .touchUpInside)
         
         return button
     }()
@@ -101,18 +144,21 @@ class EnterTaskViewController: UIViewController {
         setupViews()
         setupConstraints()
     }
-    
-    @objc func pop() {
-        view.endEditing(true)
-        dismiss(animated: true, completion: nil)
-    }
 }
 
 // MARK: - Actions
 extension EnterTaskViewController {
     
-    @objc func actionButtonPressed() {
-        pop()
+    @objc func pickTimePressed() {
+        self.becomeFirstResponder()
+    }
+    
+    @objc func timeInputDidPressDone() {
+        // Capture time here
+        self.resignFirstResponder()
+    }
+    
+    @objc func enterTaskPressed() {
     }
 }
 
@@ -131,33 +177,27 @@ private extension EnterTaskViewController {
         view.layer.shouldRasterize = true
 
         view.addSubview(acceptButton)
-        view.addSubview(timePicker)
-        view.addSubview(timeLabel)
-        view.addSubview(difficultyControl)
+//        view.addSubview(difficultyControl)
+        view.addSubview(pickTimeButton)
     }
     
     func setupConstraints() {
         
         NSLayoutConstraint.activate([
-            timeLabel.centerYAnchor.constraint(equalTo: timePicker.centerYAnchor),
-            timeLabel.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
-            timeLabel.widthAnchor.constraint(lessThanOrEqualTo: view.widthAnchor, multiplier: 2/5),
-            timeLabel.heightAnchor.constraint(lessThanOrEqualTo: view.heightAnchor, multiplier: 1/3),
+//            difficultyControl.topAnchor.constraint(equalTo: view.topAnchor),
+//            difficultyControl.bottomAnchor.constraint(equalTo: pickTimeButton.topAnchor, constant: -Constants.defaultSpacing),
+//            difficultyControl.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing),
+//            difficultyControl.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing),
             
-            timePicker.heightAnchor.constraint(equalTo: view.heightAnchor).withMultiplier(1/3),
-            timePicker.leadingAnchor.constraint(equalTo: timeLabel.trailingAnchor, constant: Constants.defaultSpacing),
-            timePicker.widthAnchor.constraint(equalTo: view.widthAnchor).withMultiplier(3/5),
-            timePicker.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor),
-            timePicker.bottomAnchor.constraint(equalTo: difficultyControl.topAnchor, constant: -Constants.defaultSpacing),
-            
-            difficultyControl.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
-            difficultyControl.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor),
-            difficultyControl.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: -Constants.defaultSpacing),
+            pickTimeButton.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: -Constants.defaultSpacing),
+            pickTimeButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing),
+            pickTimeButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing),
             
             acceptButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
                                                  constant: -Constants.defaultSpacing),
-            acceptButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            acceptButton.widthAnchor.constraint(equalTo: view.widthAnchor).withMultiplier(Constants.buttonWidthProportion)
+
+            acceptButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing),
+            acceptButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing)
         ])
     }
 }

@@ -60,6 +60,17 @@ extension LandingPresenter {
     @objc func didPressFriendlyTip(_ sender: UIButton) {
         
     }
+    
+    @objc func keyboardWillChange(_ notif: Notification) {
+        guard
+            let userInfo = notif.userInfo,
+            let landingVC = viewController,
+            let keyboardScreenEndFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else {
+                return
+        }
+        landingVC.containerScrollView.contentInset.bottom = keyboardScreenEndFrame.height
+        landingVC.containerScrollView.setNeedsLayout()
+    }
 }
 
 // MARK: - View Changing Methods

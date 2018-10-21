@@ -24,7 +24,6 @@ class LandingViewController: UIViewController {
         
         static let buttonBorderWidth: CGFloat = 3.0
         static let buttonLineHeightPercentage: CGFloat = 2.0
-        static let buttonWidthProportion: CGFloat = 0.75
         static let friendlyTipOpacity: Float = 0.8
     }
     
@@ -34,6 +33,13 @@ class LandingViewController: UIViewController {
     }
     
     private lazy var getTaskButton = makeButton(StringStore.getTask)
+    
+    lazy var containerScrollView: UIScrollView = {
+        let scrollView = UIScrollView(frame: .zero)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.isScrollEnabled = false 
+        return scrollView
+    }()
     
     lazy var friendlyTipButton: UIButton = {
         let button = UIButton(type: .system)
@@ -98,14 +104,17 @@ class LandingViewController: UIViewController {
     }
     
     func embedViewInCenter(_ viewForEmbedding: UIView) {
-        view.addSubview(viewForEmbedding)
+        containerScrollView.addSubview(viewForEmbedding)
         viewForEmbedding.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
+        viewForEmbedding.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 999), for: .vertical)
+        let constraints = [
             taskStoreLabel.bottomAnchor.constraint(equalTo: viewForEmbedding.topAnchor, constant: -Constants.defaultSpacing * 2),
             getTaskButton.topAnchor.constraint(equalTo: viewForEmbedding.bottomAnchor, constant: Constants.defaultSpacing * 2),
             viewForEmbedding.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing * 1.5),
             viewForEmbedding.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing * 1.5)
-        ])
+        ]
+        constraints.forEach { $0.priority = UILayoutPriority(rawValue: 999) }
+        NSLayoutConstraint.activate(constraints)
     }
 }
 
@@ -116,11 +125,13 @@ private extension LandingViewController {
         view.backgroundColor = theme.colours.mainColor
         theme(getTaskButton, theme.colours.mainColor, backgroundColor: theme.colours.secondaryColor)
         
-        view.addSubview(getTaskButton)
-        view.addSubview(taskStoreLabel)
-        view.addSubview(welcomeLabel)
-        view.addSubview(settingsButton)
-        view.addSubview(friendlyTipButton)
+        view.addSubview(containerScrollView)
+        
+        containerScrollView.addSubview(getTaskButton)
+        containerScrollView.addSubview(taskStoreLabel)
+        containerScrollView.addSubview(welcomeLabel)
+        containerScrollView.addSubview(settingsButton)
+        containerScrollView.addSubview(friendlyTipButton)
         
         presenter.addContentController(EnterTaskViewController(dependencies: dependencies))
         presenter.updateStoreDescription(0, 0)
@@ -128,9 +139,27 @@ private extension LandingViewController {
         
         settingsButton.addTarget(presenter, action: #selector(presenter.didPressSettings), for: .touchUpInside)
         getTaskButton.addTarget(presenter, action: #selector(presenter.didPressGetTask), for: .touchUpInside)
+        
+        NotificationCenter.default.addObserver(presenter, selector: #selector(LandingPresenter.keyboardWillChange), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     }
     
     func setupConstraints() {
+        
+        let highPriorityConstraints = [
+            friendlyTipButton.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: 2 * Constants.defaultSpacing),
+            taskStoreLabel.topAnchor.constraint(equalTo: friendlyTipButton.bottomAnchor, constant: 2 * Constants.defaultSpacing)
+        ]
+        highPriorityConstraints.forEach { $0.priority = .required }
+        
+        // ScrollView Constraints
+        NSLayoutConstraint.activate([
+            containerScrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            containerScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            containerScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            containerScrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+        
+        // General Constraints
         NSLayoutConstraint.activate([
             welcomeLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.defaultSpacing),
             welcomeLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing),
@@ -139,21 +168,17 @@ private extension LandingViewController {
             settingsButton.centerYAnchor.constraint(equalTo: welcomeLabel.centerYAnchor),
             settingsButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing),
             
-            friendlyTipButton.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: 2 * Constants.defaultSpacing),
             friendlyTipButton.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
             friendlyTipButton.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor),
 
-            taskStoreLabel.topAnchor.constraint(equalTo: friendlyTipButton.bottomAnchor, constant: 2 * Constants.defaultSpacing),
             taskStoreLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing),
             taskStoreLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.defaultSpacing),
             taskStoreLabel.bottomAnchor.constraint(lessThanOrEqualTo: getTaskButton.topAnchor, constant: -Constants.defaultSpacing),
 
-            getTaskButton.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
-            getTaskButton.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor),
-            getTaskButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Constants.defaultSpacing),
-            
-            getTaskButton.widthAnchor.constraint(equalTo: view.widthAnchor).withMultiplier(Constants.buttonWidthProportion)
-        ])
+            getTaskButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing * 2.5),
+            getTaskButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing * 2.5),
+            getTaskButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Constants.defaultSpacing)
+        ] + highPriorityConstraints)
     }
     
     func theme(_ button: UIButton, _ textColor: UIColor, backgroundColor: UIColor, withBorder: Bool = false) {

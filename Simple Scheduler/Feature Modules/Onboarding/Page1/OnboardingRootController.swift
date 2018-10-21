@@ -78,6 +78,7 @@ extension OnboardingRootController {
 private extension OnboardingRootController {
     
     func setupViews() {
+//        setupDiagonalStyle()
         view.backgroundColor = theme.colours.mainColor
         
         view.addSubview(simpleLabel)
@@ -86,7 +87,23 @@ private extension OnboardingRootController {
         
         continueArrow.addTarget(self, action: #selector(continueButtonPressed), for: .touchUpInside)
     }
-    
+//
+//    func setupDiagonalStyle() {
+//        let diagonalLayer = CAShapeLayer()
+//        let path = UIBezierPath()
+//        let frame = view.frame
+//        path.move(to: CGPoint(x: frame.minX, y: frame.maxY)) // Bottom left corner
+//        path.addLine(to: CGPoint(x: frame.minX, y: frame.maxY * 3/4))
+//        path.addLine(to: CGPoint(x: frame.maxX, y: frame.maxY))
+//        path.close()
+//
+//        diagonalLayer.path = path.cgPath
+//        diagonalLayer.fillColor = UIColor.black.cgColor // theme.colours.secondaryColor.cgColor
+//        diagonalLayer.strokeColor = nil
+//
+//        view.layer.addSublayer(diagonalLayer)
+//    }
+//
     func setupConstraints() {
         NSLayoutConstraint.activate([
             
