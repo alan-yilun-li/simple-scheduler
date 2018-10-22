@@ -11,6 +11,7 @@ import CoreData
 
 class AYLDependencies {
     
+    var theme: AYLTheme!
     var defaults = UserDefaults.standard
     var persistentContainer: NSPersistentContainer!
 }

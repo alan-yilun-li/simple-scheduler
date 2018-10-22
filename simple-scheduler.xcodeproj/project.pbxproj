@@ -16,6 +16,7 @@
 		E71B86F421693BA3007CB3FC /* UserDefaults+Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71B86F321693BA3007CB3FC /* UserDefaults+Keys.swift */; };
 		E71B86FA21693C9D007CB3FC /* AYLTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71B86F921693C9D007CB3FC /* AYLTheme.swift */; };
 		E732F40D217C68EE0016399E /* UIView+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = E732F40C217C68EE0016399E /* UIView+Common.swift */; };
+		E7537752217D5E0400920BED /* SketchPadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7537751217D5E0400920BED /* SketchPadViewController.swift */; };
 		E762E786216C7806006D1901 /* CleanPushInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E762E785216C7806006D1901 /* CleanPushInteractor.swift */; };
 		E762E788216C783F006D1901 /* AnimationHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E762E787216C783F006D1901 /* AnimationHelpers.swift */; };
 		E77C584D216962760028D1B6 /* HitTestButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77C584C216962760028D1B6 /* HitTestButton.swift */; };
@@ -46,6 +47,7 @@
 		E71B86F321693BA3007CB3FC /* UserDefaults+Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Keys.swift"; sourceTree = "<group>"; };
 		E71B86F921693C9D007CB3FC /* AYLTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AYLTheme.swift; sourceTree = "<group>"; };
 		E732F40C217C68EE0016399E /* UIView+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Common.swift"; sourceTree = "<group>"; };
+		E7537751217D5E0400920BED /* SketchPadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SketchPadViewController.swift; sourceTree = "<group>"; };
 		E762E785216C7806006D1901 /* CleanPushInteractor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CleanPushInteractor.swift; sourceTree = "<group>"; };
 		E762E787216C783F006D1901 /* AnimationHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationHelpers.swift; sourceTree = "<group>"; };
 		E77C584C216962760028D1B6 /* HitTestButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HitTestButton.swift; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 				E7F04C152177016F00FD6B96 /* EnterTaskViewController.swift */,
 				E7FFEB01216AB120001CE6AD /* LandingViewController.swift */,
 				E7FFEB05216ABE8E001CE6AD /* LandingPresenter.swift */,
+				E7537751217D5E0400920BED /* SketchPadViewController.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -305,6 +308,7 @@
 				E71B86F421693BA3007CB3FC /* UserDefaults+Keys.swift in Sources */,
 				E7FFEB06216ABE8E001CE6AD /* LandingPresenter.swift in Sources */,
 				E7FFEB02216AB120001CE6AD /* LandingViewController.swift in Sources */,
+				E7537752217D5E0400920BED /* SketchPadViewController.swift in Sources */,
 				E71B86E421693A20007CB3FC /* OnboardingRootController.swift in Sources */,
 				E7FFEB04216AB87C001CE6AD /* NSLayoutConstraint+Multiplier.swift in Sources */,
 				E77C5850216969F20028D1B6 /* CleanPushTransitionAnimator.swift in Sources */,

@@ -29,7 +29,7 @@ class LandingViewController: UIViewController {
     
     private let dependencies: AYLDependencies
     private var theme: AYLTheme {
-        return dependencies.defaults.selectedTheme
+        return dependencies.theme
     }
     
     private lazy var getTaskButton = makeButton(StringStore.getTask)
@@ -115,13 +115,16 @@ class LandingViewController: UIViewController {
         viewForEmbedding.translatesAutoresizingMaskIntoConstraints = false
         viewForEmbedding.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 999), for: .vertical)
         let constraints = [
-            taskStoreLabel.bottomAnchor.constraint(equalTo: viewForEmbedding.topAnchor, constant: -Constants.defaultSpacing * 2),
             getTaskButton.topAnchor.constraint(equalTo: viewForEmbedding.bottomAnchor, constant: Constants.defaultSpacing * 2),
             viewForEmbedding.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing * 1.5),
             viewForEmbedding.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing * 1.5)
         ]
         constraints.forEach { $0.priority = UILayoutPriority(rawValue: 999) }
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    func setupSketchPadView() {
+        containerScrollView.addSubview(<#T##view: UIView##UIView#>)
     }
 }
 
@@ -143,6 +146,7 @@ private extension LandingViewController {
         presenter.addContentController(EnterTaskViewController(dependencies: dependencies))
         presenter.updateStoreDescription(0, 0)
         presenter.updateFriendlyTipButton()
+        presenter.addSketchPadVC()
         
         settingsButton.addTarget(presenter, action: #selector(presenter.didPressSettings), for: .touchUpInside)
         getTaskButton.addTarget(presenter, action: #selector(presenter.didPressGetTask), for: .touchUpInside)

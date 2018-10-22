@@ -8,6 +8,17 @@
 
 import UIKit
 
+struct EditingTaskModel {
+    
+    var name: String?
+    var time: Int?
+    
+    init(name: String? = nil, time: Int? = nil) {
+        self.name = name
+        self.time = time
+    }
+}
+
 class EnterTaskViewController: UIViewController {
     
     private enum TaskPartTag: Int {
@@ -24,8 +35,10 @@ class EnterTaskViewController: UIViewController {
     
     private let dependencies: AYLDependencies
     private var theme: AYLTheme {
-        return dependencies.defaults.selectedTheme
+        return dependencies.theme
     }
+    
+    var editingModel = EditingTaskModel()
     
     override var inputView: UIView? {
         let input = timePicker
@@ -57,7 +70,7 @@ class EnterTaskViewController: UIViewController {
     }()
     
     override var canBecomeFirstResponder: Bool {
-        return true
+        return !taskNameField.isFirstResponder
     }
     
     private lazy var pickNameButton: UIButton = {
@@ -75,6 +88,8 @@ class EnterTaskViewController: UIViewController {
         textField.font = theme.fonts.standard
         textField.textColor = theme.colours.mainTextColor
         textField.textAlignment = .center
+        textField.returnKeyType = .done
+        textField.delegate = self
         return textField
     }()
     
@@ -119,8 +134,8 @@ class EnterTaskViewController: UIViewController {
         return button
     }()
     
-    /// Populated from `isolateTaskPart` to be able to restore the state when done.
-    private var restoreIsolatedStateInfo: (isolatedPart: TaskPartTag, removedViews: [UIView])?
+    /// Populated from `isolateTaskPart` to be able to handle any completion actions on restoration.
+    private var restoreIsolatedStateHandler: (() -> Void)?
     
     init(dependencies: AYLDependencies) {
         self.dependencies = dependencies
@@ -147,21 +162,56 @@ extension EnterTaskViewController {
             assertionFailure("incorrect enum setup for task part tags")
             return
         }
-        isolateTaskPart(tag)
+        isolateTaskPart(tag) { [weak self] in
+            guard let `self` = self else { return }
+            self.editingModel.name = self.taskNameField.text
+            self.taskNameField.removeFromSuperview()
+            
+            if let name = self.editingModel.name, name != "" {
+                self.pickNameButton.setTitle("✏️ \(name)", for: .normal)
+                self.themeButton(self.pickNameButton, true)
+            } else {
+                self.pickNameButton.setTitle("✏️ Task Name", for: .normal)
+                self.themeButton(self.pickNameButton, false)
+            }
+            self.view.endEditing(true)
+            self.resignFirstResponder()
+        }
         guard let nameButtonIndex = mainStackView.arrangedSubviews.firstIndex(of: pickNameButton) else {
             assertionFailure("incorrect enum setup for task part tags")
             return
         }
         mainStackView.insertArrangedSubview(taskNameField, at: nameButtonIndex + 1)
+        taskNameField.becomeFirstResponder()
     }
     
     @objc func pickTimePressed(_ sender: UIButton) {
+        guard let tag = TaskPartTag(rawValue: sender.tag) else {
+            assertionFailure("incorrect enum setup for task part tags")
+            return
+        }
+        isolateTaskPart(tag) { [weak self] in
+            guard let `self` = self else { return }
+            
+            let hours = Calendar.current.component(.hour, from: self.timePicker.date)
+            let minutes = Calendar.current.component(.minute, from: self.timePicker.date)
+
+            self.editingModel.time = (hours * 60) + minutes
+            if hours == 0 {
+                self.pickTimeButton.setTitle("⌛ \(minutes)mins", for: .normal)
+            } else if minutes == 0 {
+                self.pickTimeButton.setTitle("⌛ \(hours)hrs", for: .normal)
+            } else {
+                self.pickTimeButton.setTitle("⌛ \(hours)hrs \(minutes)mins", for: .normal)
+            }
+            self.themeButton(self.pickTimeButton, true)
+            self.resignFirstResponder()
+        }
         self.becomeFirstResponder()
     }
     
     @objc func timeInputDidPressDone() {
-        // Capture time here
-        self.resignFirstResponder()
+        restoreStateAfterIsolation()
     }
     
     @objc func enterTaskPressed(_ sender: UIButton) {
@@ -172,29 +222,20 @@ extension EnterTaskViewController {
 // MARK: - Dynamic View Modification
 extension EnterTaskViewController {
 
-    private func isolateTaskPart(_ taskPart: TaskPartTag) {
-        // Cannot isolate when we already need to isolate
-        guard restoreIsolatedStateInfo == nil else { return }
-        var removedViews = [UIView]()
+    private func isolateTaskPart(_ taskPart: TaskPartTag, restoreStateHandler: (() -> Void)? = nil) {
         for part in mainStackView.arrangedSubviews where part.tag != taskPart.rawValue {
             part.isHidden = true
-            removedViews.append(part)
         }
-        restoreIsolatedStateInfo = (isolatedPart: taskPart, removedViews: removedViews)
+        restoreIsolatedStateHandler = restoreStateHandler
     }
     
     func restoreStateAfterIsolation() {
-        guard
-            let info = restoreIsolatedStateInfo,
-            mainStackView.arrangedSubviews.count >= 1,
-            mainStackView.arrangedSubviews.first!.tag == info.isolatedPart.rawValue
-        else {
-            return
+        UIView.animate(withDuration: 0.3) {
+            for view in self.mainStackView.arrangedSubviews {
+                view.isHidden = false
+            }
+            self.restoreIsolatedStateHandler?()
         }
-        for view in mainStackView.arrangedSubviews {
-            view.isHidden = false
-        }
-        restoreIsolatedStateInfo = nil
     }
 }
 
@@ -258,5 +299,14 @@ private extension EnterTaskViewController {
 
         if mainButton { button.layer.borderWidth = Constants.buttonBorderWidth }
         themeButton(button, false)
+    }
+}
+
+// MARK: - UITextField Delegate
+extension EnterTaskViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.restoreStateAfterIsolation()
+        return true
     }
 }

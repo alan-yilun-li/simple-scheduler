@@ -17,7 +17,7 @@ class OnboardingRootController: UIViewController {
     
     private let dependencies: AYLDependencies
     private var theme: AYLTheme {
-        return dependencies.defaults.selectedTheme
+        return dependencies.theme
     }
     
     private lazy var simpleLabel = makeTitleComponent(StringStore.simple)

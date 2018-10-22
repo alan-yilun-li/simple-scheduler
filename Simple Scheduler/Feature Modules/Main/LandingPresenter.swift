@@ -19,12 +19,14 @@ class LandingPresenter: NSObject {
     
     private let dependencies: AYLDependencies
     private var theme: AYLTheme {
-        return dependencies.defaults.selectedTheme
+        return dependencies.theme
     }
     
     init(_ dependencies: AYLDependencies) {
         self.dependencies = dependencies
     }
+    
+    var sketchPadVC: SketchPadViewController!
     
     func updateStoreDescription(_ tasksPlanned: Int, _ tasksCompleted: Int) {
         viewController?.taskStoreLabel.text = "\(StringStore.taskStoreDescriptionPart1) \(tasksPlanned) \(StringStore.taskStoreDescriptionPart2), \(tasksCompleted) completed."
@@ -81,6 +83,13 @@ extension LandingPresenter {
 
 // MARK: - View Changing Methods
 extension LandingPresenter: UIViewControllerTransitioningDelegate {
+    
+    func addSketchPadVC() {
+        guard let vc = viewController else { return }
+        sketchPadVC = SketchPadViewController(dependencies: dependencies)
+        vc.addChild(sketchPadVC)
+        sketchPadVC.didMove(toParent: vc)
+    }
     
     func addContentController(_ child: UIViewController) {
         guard let vc = viewController else { return }
