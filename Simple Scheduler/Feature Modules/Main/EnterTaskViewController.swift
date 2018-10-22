@@ -19,6 +19,21 @@ struct EditingTaskModel {
     }
 }
 
+protocol EnterTaskDelegate: class {
+    func enterNamePressed()
+    func enterNameDoneEditing()
+    func enterTimePressed()
+    func enterDifficultyPressed()
+}
+
+extension EnterTaskDelegate {
+    func enterNamePressed() {}
+    func enterNameDoneEditing() {}
+
+    func enterTimePressed() {}
+    func enterDifficultyPressed() {}
+}
+
 class EnterTaskViewController: UIViewController {
     
     private enum TaskPartTag: Int {
@@ -37,6 +52,8 @@ class EnterTaskViewController: UIViewController {
     private var theme: AYLTheme {
         return dependencies.theme
     }
+    
+    weak var delegate: EnterTaskDelegate?
     
     var editingModel = EditingTaskModel()
     
@@ -86,7 +103,7 @@ class EnterTaskViewController: UIViewController {
         let textField = UITextField(frame: .zero)
         textField.placeholder = "Short Description Here!"
         textField.font = theme.fonts.standard
-        textField.textColor = theme.colours.mainTextColor
+        textField.textColor = theme.colours.userEnteredText
         textField.textAlignment = .center
         textField.returnKeyType = .done
         textField.delegate = self
@@ -158,6 +175,8 @@ class EnterTaskViewController: UIViewController {
 extension EnterTaskViewController {
     
     @objc func pickNamePressed(_ sender: UIButton) {
+        delegate?.enterNamePressed()
+        
         guard let tag = TaskPartTag(rawValue: sender.tag) else {
             assertionFailure("incorrect enum setup for task part tags")
             return
@@ -176,6 +195,7 @@ extension EnterTaskViewController {
             }
             self.view.endEditing(true)
             self.resignFirstResponder()
+            self.delegate?.enterNameDoneEditing()
         }
         guard let nameButtonIndex = mainStackView.arrangedSubviews.firstIndex(of: pickNameButton) else {
             assertionFailure("incorrect enum setup for task part tags")
@@ -186,6 +206,8 @@ extension EnterTaskViewController {
     }
     
     @objc func pickTimePressed(_ sender: UIButton) {
+        delegate?.enterTimePressed()
+        
         guard let tag = TaskPartTag(rawValue: sender.tag) else {
             assertionFailure("incorrect enum setup for task part tags")
             return
@@ -198,6 +220,9 @@ extension EnterTaskViewController {
 
             self.editingModel.time = (hours * 60) + minutes
             if hours == 0 {
+                guard minutes != 0 else {
+                    return
+                }
                 self.pickTimeButton.setTitle("⌛ \(minutes)mins", for: .normal)
             } else if minutes == 0 {
                 self.pickTimeButton.setTitle("⌛ \(hours)hrs", for: .normal)
@@ -243,7 +268,7 @@ extension EnterTaskViewController {
 private extension EnterTaskViewController {
     
     func setupViews() {
-        view.backgroundColor = UIColor.white
+        view.backgroundColor = theme.colours.mainColor
         view.layer.masksToBounds = false
         
         view.layer.cornerRadius = 20

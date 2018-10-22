@@ -70,6 +70,10 @@ extension LandingPresenter {
             let keyboardScreenEndFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else {
                 return
         }
+        guard !sketchPadVC.isSketching else {
+            return 
+        }
+        
         if notif.name == UIResponder.keyboardWillHideNotification {
             landingVC.scrollViewBottomConstraint.constant = 0
         } else {
@@ -81,6 +85,27 @@ extension LandingPresenter {
     }
 }
 
+// MARK: - Enter Task Delegate
+extension LandingPresenter: EnterTaskDelegate {
+    
+    func enterNamePressed() {
+        sketchPadVC.textView.resignFirstResponder()
+        viewController?.removeSketchPadView()
+    }
+    
+    func enterNameDoneEditing() {
+        viewController?.setupSketchPadView()
+    }
+    
+    func pressedEnterTime() {
+        
+    }
+    
+    func pressedEnterDifficulty() {
+        
+    }
+}
+
 // MARK: - View Changing Methods
 extension LandingPresenter: UIViewControllerTransitioningDelegate {
     
@@ -88,11 +113,16 @@ extension LandingPresenter: UIViewControllerTransitioningDelegate {
         guard let vc = viewController else { return }
         sketchPadVC = SketchPadViewController(dependencies: dependencies)
         vc.addChild(sketchPadVC)
+        vc.setupSketchPadView()
         sketchPadVC.didMove(toParent: vc)
     }
     
     func addContentController(_ child: UIViewController) {
         guard let vc = viewController else { return }
+        
+        if let enterTaskVC = child as? EnterTaskViewController {
+            enterTaskVC.delegate = self
+        }
         vc.addChild(child)
         vc.embedViewInCenter(child.view)
         child.didMove(toParent: vc)

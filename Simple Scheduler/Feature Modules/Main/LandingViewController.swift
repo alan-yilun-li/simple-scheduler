@@ -34,6 +34,9 @@ class LandingViewController: UIViewController {
     
     private lazy var getTaskButton = makeButton(StringStore.getTask)
     
+    /// Enter or get task view
+    private var mainContentView: UIView!
+    
     lazy var containerScrollView: UIScrollView = {
         let scrollView = UIScrollView(frame: .zero)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -86,6 +89,9 @@ class LandingViewController: UIViewController {
         return button
     }()
     
+    private lazy var bindingConstraint = self.taskStoreLabel.bottomAnchor.constraint(equalTo: self.mainContentView.topAnchor, constant: -Constants.defaultSpacing * 2)
+    
+    
     let presenter: LandingPresenter
     
     init(_ dependencies: AYLDependencies, presenter: LandingPresenter) {
@@ -111,6 +117,7 @@ class LandingViewController: UIViewController {
     }
     
     func embedViewInCenter(_ viewForEmbedding: UIView) {
+        mainContentView = viewForEmbedding
         containerScrollView.addSubview(viewForEmbedding)
         viewForEmbedding.translatesAutoresizingMaskIntoConstraints = false
         viewForEmbedding.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 999), for: .vertical)
@@ -124,7 +131,30 @@ class LandingViewController: UIViewController {
     }
     
     func setupSketchPadView() {
-        containerScrollView.addSubview(<#T##view: UIView##UIView#>)
+        guard let sketchPadView = presenter.sketchPadVC.view else {
+            assertionFailure("sketchpad view should exist")
+            return
+        }
+        sketchPadView.translatesAutoresizingMaskIntoConstraints = false
+        bindingConstraint.isActive = false
+        containerScrollView.addSubview(sketchPadView)
+    
+        NSLayoutConstraint.activate([
+            sketchPadView.topAnchor.constraint(equalTo: taskStoreLabel.bottomAnchor, constant: Constants.defaultSpacing),
+            sketchPadView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing * 1.5),
+            sketchPadView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing * 1.5),
+            sketchPadView.bottomAnchor.constraint(equalTo: mainContentView.topAnchor, constant: -Constants.defaultSpacing * 2)
+        ])
+    }
+    
+    func removeSketchPadView() {
+        let sketchPadView = presenter.sketchPadVC.view
+        bindingConstraint.isActive = true
+
+        UIView.animate(withDuration: 0.3) {
+            sketchPadView?.removeFromSuperview()
+            self.view.layoutIfNeeded()
+        }
     }
 }
 

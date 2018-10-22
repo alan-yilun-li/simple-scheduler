@@ -19,7 +19,8 @@ enum AYLTheme: Int {
 struct Colours {
     static let aylWhite = UIColor.white
     static let aylBlack = UIColor.black
-    static let aylGrey = UIColor.darkGray
+    static let aylDarkGrey = UIColor.darkGray
+    static let aylLightGray = UIColor.lightGray
     
     let theme: AYLTheme
     
@@ -40,7 +41,11 @@ struct Colours {
     }
     
     var mainGrey: UIColor {
-        return Colours.aylGrey
+        return Colours.aylLightGray
+    }
+    
+    var userEnteredText: UIColor {
+        return Colours.aylDarkGrey
     }
     
     var secondaryColor: UIColor {
