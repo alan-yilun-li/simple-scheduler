@@ -36,7 +36,9 @@ class SketchPadViewController: UIViewController {
         textView.font = theme.fonts.small
         textView.textColor = theme.colours.userEnteredText
         textView.tintColor = theme.colours.secondaryColor
+        textView.backgroundColor = .clear
         textView.delegate = self
+        textView.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 0), for: .vertical)
         return textView
     }()
     
@@ -55,7 +57,7 @@ class SketchPadViewController: UIViewController {
         
         view.backgroundColor = theme.colours.mainColor
         view.layer.masksToBounds = false
-        
+
         view.layer.cornerRadius = 20
         view.layer.shadowOpacity = 0.5
         view.layer.shadowOffset = CGSize(width: 3, height: 3)
@@ -76,8 +78,11 @@ private extension SketchPadViewController {
     }
     
     func setupConstraints() {
+        let topConstraint = titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: Constants.defaultSpacing)
+        topConstraint.priority = .required
+
         let constraints = [
-            titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: Constants.defaultSpacing),
+            topConstraint,
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
             textView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constants.defaultSpacing / 2),

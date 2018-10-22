@@ -90,15 +90,18 @@ extension LandingPresenter: EnterTaskDelegate {
     
     func enterNamePressed() {
         sketchPadVC.textView.resignFirstResponder()
-        viewController?.removeSketchPadView()
+        viewController?.hideSketchPadView()
     }
     
     func enterNameDoneEditing() {
-        viewController?.setupSketchPadView()
+        viewController?.showSketchPadView()
     }
     
     func pressedEnterTime() {
         
+    }
+    
+    func enterTimeDoneEditing() {
     }
     
     func pressedEnterDifficulty() {

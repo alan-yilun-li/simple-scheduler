@@ -23,6 +23,7 @@ protocol EnterTaskDelegate: class {
     func enterNamePressed()
     func enterNameDoneEditing()
     func enterTimePressed()
+    func enterTimeDoneEditing()
     func enterDifficultyPressed()
 }
 
@@ -31,6 +32,8 @@ extension EnterTaskDelegate {
     func enterNameDoneEditing() {}
 
     func enterTimePressed() {}
+    func enterTimeDoneEditing() {}
+
     func enterDifficultyPressed() {}
 }
 
@@ -137,7 +140,8 @@ class EnterTaskViewController: UIViewController {
     private lazy var timePicker: UIDatePicker = {
         let timePicker = UIDatePicker(frame: .zero)
         timePicker.datePickerMode = .countDownTimer
-        timePicker.minuteInterval = 5
+        timePicker.minuteInterval = 1
+        timePicker.countDownDuration = 60 * 5
         
         return timePicker
     }()
@@ -213,6 +217,10 @@ extension EnterTaskViewController {
             return
         }
         isolateTaskPart(tag) { [weak self] in
+            defer {
+                self?.resignFirstResponder()
+                self?.delegate?.enterTimeDoneEditing()
+            }
             guard let `self` = self else { return }
             
             let hours = Calendar.current.component(.hour, from: self.timePicker.date)
@@ -230,7 +238,6 @@ extension EnterTaskViewController {
                 self.pickTimeButton.setTitle("⌛ \(hours)hrs \(minutes)mins", for: .normal)
             }
             self.themeButton(self.pickTimeButton, true)
-            self.resignFirstResponder()
         }
         self.becomeFirstResponder()
     }
