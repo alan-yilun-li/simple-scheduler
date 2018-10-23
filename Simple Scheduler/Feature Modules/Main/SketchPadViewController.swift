@@ -15,6 +15,8 @@ class SketchPadViewController: UIViewController {
         
         static let dismissDetailString = "tap anywhere outside to dismiss"
         static let writingDetailString = "this is your space to write"
+        
+        static let fileName = "sketch-pad.txt"
     }
     
     private let dependencies: AYLDependencies
@@ -59,6 +61,7 @@ class SketchPadViewController: UIViewController {
         textView.backgroundColor = .clear
         textView.delegate = self
         textView.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 0), for: .vertical)
+        textView.text = readFromFile()
         return textView
     }()
     
@@ -67,13 +70,19 @@ class SketchPadViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    deinit {
+        writeToFile(textView.text)
     }
 
     
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+    
+        showDescriptionLabel = textView.text.isEmpty
         
         view.backgroundColor = theme.colours.mainColor
         view.layer.masksToBounds = false
@@ -84,12 +93,18 @@ class SketchPadViewController: UIViewController {
         view.layer.shadowRadius = 10
         view.layer.shouldRasterize = true
         
+        NotificationCenter.default.addObserver(self, selector: #selector(appWillClose), name: UIApplication.willTerminateNotification, object: nil)
+        
         setupViews()
         setupConstraints()
     }
     
     @objc func descriptionLabelTapped() {
         textView.becomeFirstResponder()
+    }
+    
+    @objc func appWillClose() {
+        writeToFile(textView.text)
     }
 }
 
@@ -152,5 +167,25 @@ extension SketchPadViewController: UITextViewDelegate {
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
+    }
+}
+
+// MARK: - File Writing
+extension SketchPadViewController {
+    
+    private func writeToFile(_ text: String) {
+        guard let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
+        let fileURL = directory.appendingPathComponent(Constants.fileName)
+        do {
+            try text.write(to: fileURL, atomically: false, encoding: .utf32)
+        } catch {
+            print("failed to write")
+        }
+    }
+    
+    private func readFromFile() -> String? {
+        guard let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil}
+        let fileURL = directory.appendingPathComponent(Constants.fileName)
+        return try? String(contentsOf: fileURL, encoding: .utf32)
     }
 }
