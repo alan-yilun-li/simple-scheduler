@@ -12,6 +12,9 @@ class SketchPadViewController: UIViewController {
     
     private struct Constants {
         static let defaultSpacing: CGFloat = 16.0
+        
+        static let dismissDetailString = "tap anywhere outside to dismiss"
+        static let writingDetailString = "this is your space to write"
     }
     
     private let dependencies: AYLDependencies
@@ -29,18 +32,23 @@ class SketchPadViewController: UIViewController {
         label.text = "🖍️ Sketch Pad"
         return label
     }()
-//
-//    lazy var descriptionLabel: UILabel = {
-//        let label = UILabel(frame: .zero)
-//        label.translatesAutoresizingMaskIntoConstraints = false
-//        label.font = theme.fonts.smallItalicized
-//        label.textColor = theme.colours.mainGrey.withAlphaComponent(0.7)
-//        label.text = "Feel free to use this space here to jot down some notes or whatever you'd like"
-//        label.numberOfLines = 3
-//
-//        label.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(descriptionLabelTapped)))
-//        return label
-//    }()
+
+    lazy var descriptionLabel: UILabel = {
+        let label = UILabel(frame: .zero)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = theme.fonts.smallItalicized
+        label.textColor = theme.colours.mainGrey.withAlphaComponent(0.8)
+        label.text = Constants.writingDetailString
+        label.numberOfLines = 1
+        label.textAlignment = .center
+        return label
+    }()
+    
+    private var showDescriptionLabel: Bool {
+        get { return !descriptionLabelHeightConstraint.isActive }
+        set { descriptionLabelHeightConstraint.isActive = !newValue }
+    }
+    private lazy var descriptionLabelHeightConstraint = descriptionLabel.heightAnchor.constraint(equalToConstant: 0)
     
     lazy var textView: UITextView = {
         let textView = UITextView(frame: .zero)
@@ -91,7 +99,7 @@ private extension SketchPadViewController {
     func setupViews() {
         view.addSubview(titleLabel)
         view.addSubview(textView)
-//        view.addSubview(descriptionLabel)
+        view.addSubview(descriptionLabel)
     }
     
     func setupConstraints() {
@@ -105,11 +113,11 @@ private extension SketchPadViewController {
             textView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constants.defaultSpacing / 2),
             textView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing),
             textView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing),
-            textView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -Constants.defaultSpacing)
-//
-//            descriptionLabel.leadingAnchor.constraint(equalTo: textView.leadingAnchor, constant: Constants.defaultSpacing),
-//            descriptionLabel.trailingAnchor.constraint(equalTo: textView.trailingAnchor, constant: -Constants.defaultSpacing),
-//            descriptionLabel.centerYAnchor.constraint(equalTo: textView.centerYAnchor),
+            textView.bottomAnchor.constraint(equalTo: descriptionLabel.topAnchor, constant: -Constants.defaultSpacing / 4),
+
+            descriptionLabel.leadingAnchor.constraint(equalTo: textView.leadingAnchor),
+            descriptionLabel.trailingAnchor.constraint(equalTo: textView.trailingAnchor),
+            descriptionLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -Constants.defaultSpacing / 4)
         ]
         constraints.forEach { $0.priority = .defaultLow }
         NSLayoutConstraint.activate(constraints)
@@ -121,13 +129,25 @@ extension SketchPadViewController: UITextViewDelegate {
     
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
         isSketching = true
-//        descriptionLabel.isHidden = true
+        UIView.animate(withDuration: 0.3) {
+            self.showDescriptionLabel = true
+            self.view.layoutIfNeeded()
+        }
+        self.descriptionLabel.text = Constants.dismissDetailString
         return true
     }
     
     func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
         isSketching = false
-//        descriptionLabel.isHidden = ("" == textView.text ?? "")
+        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            textView.text = nil
+            self.descriptionLabel.text = Constants.writingDetailString
+        } else {
+            UIView.animate(withDuration: 0.3) {
+                self.showDescriptionLabel = false
+                self.view.layoutIfNeeded()
+            }
+        }
         return true
     }
     
