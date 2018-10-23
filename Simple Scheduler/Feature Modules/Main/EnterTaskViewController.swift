@@ -53,6 +53,8 @@ class EnterTaskViewController: UIViewController {
         static let buttonBorderWidth: CGFloat = 3.5
         static let buttonLineHeightPercentage: CGFloat = 2.0
         static let buttonWidthProportion: CGFloat = 0.75
+        
+        static let defaultExpectedTime: TimeInterval = 60 * 5
     }
     
     private let dependencies: AYLDependencies
@@ -145,8 +147,7 @@ class EnterTaskViewController: UIViewController {
         let timePicker = UIDatePicker(frame: .zero)
         timePicker.datePickerMode = .countDownTimer
         timePicker.minuteInterval = 5
-        timePicker.countDownDuration = 60 * 5
-        
+        timePicker.countDownDuration = Constants.defaultExpectedTime
         return timePicker
     }()
     
@@ -261,6 +262,8 @@ extension EnterTaskViewController {
             _ = Task.insert(into: context, name: self.editingModel.name!,
                             time: Int16(clamping: self.editingModel.time!), difficulty: 0)
         }
+        // Add some kind of reward message or button
+        clearInputs()
     }
 }
 
@@ -281,6 +284,15 @@ extension EnterTaskViewController {
             }
             self.restoreIsolatedStateHandler?()
         }
+    }
+    
+    func clearInputs() {
+        taskNameField.text = nil
+        themeButton(pickNameButton, false)
+        themeButton(pickTimeButton, false)
+        pickNameButton.setTitle("✏️ Task Name", for: .normal)
+        pickTimeButton.setTitle("⌛ Expected Time", for: .normal)
+        timePicker.countDownDuration = Constants.defaultExpectedTime
     }
 }
 
