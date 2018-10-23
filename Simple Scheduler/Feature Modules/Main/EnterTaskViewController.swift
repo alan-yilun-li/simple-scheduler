@@ -17,6 +17,10 @@ struct EditingTaskModel {
         self.name = name
         self.time = time
     }
+    
+    var isFilled: Bool {
+        return time != nil && name != nil
+    }
 }
 
 protocol EnterTaskDelegate: class {
@@ -140,7 +144,7 @@ class EnterTaskViewController: UIViewController {
     private lazy var timePicker: UIDatePicker = {
         let timePicker = UIDatePicker(frame: .zero)
         timePicker.datePickerMode = .countDownTimer
-        timePicker.minuteInterval = 1
+        timePicker.minuteInterval = 5
         timePicker.countDownDuration = 60 * 5
         
         return timePicker
@@ -190,10 +194,11 @@ extension EnterTaskViewController {
             self.editingModel.name = self.taskNameField.text
             self.taskNameField.removeFromSuperview()
             
-            if let name = self.editingModel.name, name != "" {
+            if let name = self.editingModel.name, !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 self.pickNameButton.setTitle("✏️ \(name)", for: .normal)
                 self.themeButton(self.pickNameButton, true)
             } else {
+                self.taskNameField.text = ""
                 self.pickNameButton.setTitle("✏️ Task Name", for: .normal)
                 self.themeButton(self.pickNameButton, false)
             }
@@ -247,7 +252,15 @@ extension EnterTaskViewController {
     }
     
     @objc func enterTaskPressed(_ sender: UIButton) {
-        enterTaskButton.shake(withFlash: true)
+        guard editingModel.isFilled else {
+            sender.shake()
+            return
+        }
+        let context = dependencies.persistentContainer.viewContext
+        context.performChanges {
+            _ = Task.insert(into: context, name: self.editingModel.name!,
+                            time: Int16(clamping: self.editingModel.time!), difficulty: 0)
+        }
     }
 }
 

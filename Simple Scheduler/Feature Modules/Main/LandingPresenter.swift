@@ -7,33 +7,46 @@
 //
 
 import UIKit
+import CoreData
 
 class LandingPresenter: NSObject {
     
     weak var viewController: LandingViewController?
-    
-    // Remembering last pressed button for the viewExpansionAnimator
-    private var pressedExpandableButton: UIButton!
-    
     var currentContentVC: UIViewController?
-    
+
     private let dependencies: AYLDependencies
     private var theme: AYLTheme {
         return dependencies.theme
     }
     
-    init(_ dependencies: AYLDependencies) {
-        self.dependencies = dependencies
-    }
+    private lazy var taskFetchRequest: NSFetchRequest<Task> = {
+        let request = Task.sortedFetchRequest
+        request.fetchBatchSize = 10
+        request.returnsObjectsAsFaults = true
+        return request
+    }()
+    
+    private var tasks = [Task]()
     
     var sketchPadVC: SketchPadViewController!
+    var storeDescription: String! {
+        didSet {
+            viewController?.taskStoreLabel.text = storeDescription
+        }
+    }
     
-    func updateStoreDescription(_ tasksPlanned: Int, _ tasksCompleted: Int) {
-        viewController?.taskStoreLabel.text = "\(StringStore.taskStoreDescriptionPart1) \(tasksPlanned) \(StringStore.taskStoreDescriptionPart2), \(tasksCompleted) completed."
+    init(_ dependencies: AYLDependencies) {
+        self.dependencies = dependencies
+        super.init()
+        setupCoreDataListening()
     }
     
     func updateFriendlyTipButton() {
         viewController?.friendlyTipButton.setTitle( StringStore.friendlyTips.randomElement(), for: .normal)
+    }
+    
+    private func updateStoreDescription(_ tasksPlanned: Int, _ tasksCompleted: Int) {
+        storeDescription = "\(StringStore.taskStoreDescriptionPart1) \(tasksPlanned) \(StringStore.taskStoreDescriptionPart2), \(tasksCompleted) completed."
     }
 }
 
@@ -41,14 +54,7 @@ class LandingPresenter: NSObject {
 extension LandingPresenter {
     
     @objc func didPressEnterTask(_ sender: UIButton) {
-        if let currentContentVC = currentContentVC {
-            guard type(of: currentContentVC) != EnterTaskViewController.self else {
-                return
-            }
-            removeContentController(currentContentVC)
-        }
-        let contentVC = EnterTaskViewController(dependencies: dependencies)
-        addContentController(contentVC)
+       assertionFailure("wat")
     }
     
     @objc func didPressSettings(_ sender: UIButton) {
@@ -61,6 +67,10 @@ extension LandingPresenter {
     
     @objc func didPressFriendlyTip(_ sender: UIButton) {
         
+    }
+    
+    @objc func didPressScreen(_ sender: UITapGestureRecognizer) {
+        sketchPadVC.view.endEditing(true)
     }
     
     @objc func keyboardWillChange(_ notif: Notification) {
@@ -107,6 +117,7 @@ extension LandingPresenter: EnterTaskDelegate {
     func pressedEnterDifficulty() {
         
     }
+
 }
 
 // MARK: - View Changing Methods
@@ -139,4 +150,52 @@ extension LandingPresenter: UIViewControllerTransitioningDelegate {
         currentContentVC = nil
     }
 
+}
+
+// MARK: - Core Data Support
+extension LandingPresenter: NSFetchedResultsControllerDelegate {
+    
+    func setupCoreDataListening() {
+        let context = dependencies.persistentContainer.viewContext
+        do {
+            tasks = try context.fetch(taskFetchRequest)
+            let numTasksCompleted = dependencies.defaults.numberOfTasksCompleted
+            updateStoreDescription(tasks.count, numTasksCompleted)
+        } catch {
+            assertionFailure("perform fetch failed test")
+        }
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(managedObjectContextObjectsDidChange), name: .NSManagedObjectContextObjectsDidChange, object: context)
+        notificationCenter.addObserver(self, selector: #selector(managedObjectContextWillSave), name: .NSManagedObjectContextWillSave, object: context)
+        notificationCenter.addObserver(self, selector: #selector(managedObjectContextDidSave), name: .NSManagedObjectContextDidSave, object: context)
+    }
+    
+    @objc func managedObjectContextObjectsDidChange(_ notification: Notification) {
+        guard let userInfo = notification.userInfo else { return }
+        
+        if let inserts = userInfo[NSInsertedObjectsKey] as? Set<NSManagedObject>, inserts.count > 0 {
+            for task in inserts where task is Task{
+                tasks.append(task as! Task)
+            }
+        }
+        if let deletes = userInfo[NSDeletedObjectsKey] as? Set<NSManagedObject>, deletes.count > 0 {
+            var i = 0
+            while i < tasks.count {
+                if deletes.contains(tasks[i]) {
+                    tasks.remove(at: i)
+                    continue
+                }
+                i += 1
+            }
+        }
+        updateStoreDescription(tasks.count, dependencies.defaults.numberOfTasksCompleted)
+    }
+    
+    @objc func managedObjectContextWillSave(_ notification: Notification) {
+        print("test")
+    }
+    
+    @objc func managedObjectContextDidSave(_ notification: Notification) {
+        print("TesttesT")
+    }
 }

@@ -11,19 +11,21 @@ import CoreData
 
 final class Task: NSManagedObject {
     
-    @NSManaged fileprivate(set) var timeExpected: Int
-    @NSManaged fileprivate(set) var difficulty: Int
+    @NSManaged fileprivate(set) var name: String
+    @NSManaged fileprivate(set) var time: Int16
+    @NSManaged fileprivate(set) var difficulty: Int16
 
-    static func insert(into context: NSManagedObjectContext, time: Int, difficulty: Int) -> Task {
+    static func insert(into context: NSManagedObjectContext, name: String, time: Int16, difficulty: Int16) -> Task {
         let task: Task = context.insertObject()
+        task.name = name
         task.difficulty = difficulty
-        task.timeExpected = time
+        task.time = time
         return task
     }
 }
 
 extension Task: Managed {
     static var defaultSortDescriptors: [NSSortDescriptor] {
-        return [NSSortDescriptor(key: #keyPath(Task.timeExpected), ascending: false)]
+        return [NSSortDescriptor(key: #keyPath(Task.time), ascending: false)]
     }
 }

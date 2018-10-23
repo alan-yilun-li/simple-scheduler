@@ -21,19 +21,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         setupContainer { container in
             dependencies.persistentContainer = container
-            
+    
+            if UserDefaults.standard.userShouldOnboard {
+                let rootViewController = OnboardingRootController(dependencies)
+                let navController = BlankNavigationController(rootViewController: rootViewController)
+                
+                self.window = UIWindow(frame: UIScreen.main.bounds)
+                self.window?.rootViewController = navController
+                self.window?.makeKeyAndVisible()
+            } else {
+                
+            }
         }
         
-        if UserDefaults.standard.userShouldOnboard {
-            let rootViewController = OnboardingRootController(dependencies)
-            let navController = BlankNavigationController(rootViewController: rootViewController)
-            
-            window = UIWindow(frame: UIScreen.main.bounds)
-            window?.rootViewController = navController
-            window?.makeKeyAndVisible()
-        } else {
-            
-        }
         return true
     }
     

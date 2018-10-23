@@ -29,6 +29,18 @@ class SketchPadViewController: UIViewController {
         label.text = "🖍️ Sketch Pad"
         return label
     }()
+//
+//    lazy var descriptionLabel: UILabel = {
+//        let label = UILabel(frame: .zero)
+//        label.translatesAutoresizingMaskIntoConstraints = false
+//        label.font = theme.fonts.smallItalicized
+//        label.textColor = theme.colours.mainGrey.withAlphaComponent(0.7)
+//        label.text = "Feel free to use this space here to jot down some notes or whatever you'd like"
+//        label.numberOfLines = 3
+//
+//        label.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(descriptionLabelTapped)))
+//        return label
+//    }()
     
     lazy var textView: UITextView = {
         let textView = UITextView(frame: .zero)
@@ -67,6 +79,10 @@ class SketchPadViewController: UIViewController {
         setupViews()
         setupConstraints()
     }
+    
+    @objc func descriptionLabelTapped() {
+        textView.becomeFirstResponder()
+    }
 }
 
 // MARK: - View Setup
@@ -75,6 +91,7 @@ private extension SketchPadViewController {
     func setupViews() {
         view.addSubview(titleLabel)
         view.addSubview(textView)
+//        view.addSubview(descriptionLabel)
     }
     
     func setupConstraints() {
@@ -88,7 +105,11 @@ private extension SketchPadViewController {
             textView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constants.defaultSpacing / 2),
             textView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing),
             textView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing),
-            textView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -Constants.defaultSpacing),
+            textView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -Constants.defaultSpacing)
+//
+//            descriptionLabel.leadingAnchor.constraint(equalTo: textView.leadingAnchor, constant: Constants.defaultSpacing),
+//            descriptionLabel.trailingAnchor.constraint(equalTo: textView.trailingAnchor, constant: -Constants.defaultSpacing),
+//            descriptionLabel.centerYAnchor.constraint(equalTo: textView.centerYAnchor),
         ]
         constraints.forEach { $0.priority = .defaultLow }
         NSLayoutConstraint.activate(constraints)
@@ -100,12 +121,14 @@ extension SketchPadViewController: UITextViewDelegate {
     
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
         isSketching = true
+//        descriptionLabel.isHidden = true
         return true
     }
     
     func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
         isSketching = false
-        return true 
+//        descriptionLabel.isHidden = ("" == textView.text ?? "")
+        return true
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {

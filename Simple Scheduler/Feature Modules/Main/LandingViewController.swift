@@ -67,7 +67,8 @@ class LandingViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = theme.fonts.small
         label.textColor = theme.colours.mainTextColor
-        label.numberOfLines = 0 
+        label.numberOfLines = 0
+        label.text = presenter.storeDescription
         return label
     }()
     
@@ -183,6 +184,8 @@ class LandingViewController: UIViewController {
 private extension LandingViewController {
     
     func setupViews() {
+        view.addGestureRecognizer(UITapGestureRecognizer(target: presenter, action: #selector(LandingPresenter.didPressScreen(_:))))
+        
         view.backgroundColor = theme.colours.mainColor
         theme(getTaskButton, theme.colours.mainColor, backgroundColor: theme.colours.secondaryColor)
         
@@ -195,7 +198,6 @@ private extension LandingViewController {
         containerScrollView.addSubview(friendlyTipButton)
         
         presenter.addContentController(EnterTaskViewController(dependencies: dependencies))
-        presenter.updateStoreDescription(0, 0)
         presenter.updateFriendlyTipButton()
         presenter.addSketchPadVC()
         
