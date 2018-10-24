@@ -51,7 +51,7 @@ class LandingPresenter: NSObject {
     }
     
     func updateFriendlyTipButton() {
-        viewController?.friendlyTipButton.setTitle( StringStore.friendlyTips.randomElement(), for: .normal)
+        viewController?.friendlyTipButton.setTitle(StringStore.friendlyTips.randomElement(), for: .normal)
     }
     
     private func updateStoreDescription(_ tasksPlanned: Int, _ tasksCompleted: Int) {

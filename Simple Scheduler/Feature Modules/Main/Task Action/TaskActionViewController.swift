@@ -8,73 +8,26 @@
 
 import UIKit
 
-protocol PresentationObjectDelegate {
-    func modeDidChange(_ presentationObject: TaskActionPresentationObject)
+protocol TaskActionDelegate: class {
+    func enterNamePressed()
+    func enterNameDoneEditing()
+    func enterTimePressed()
+    func enterTimeDoneEditing()
+    func enterDifficultyPressed()
+    func enterDifficultyDoneEditing()
+
+    func taskActionButtonPressed()
 }
 
-struct TaskActionPresentationObject {
-    
-    enum Mode {
-        case enter, get
-    }
-    
-    var mode: Mode {
-        didSet {
-            delegate?.modeDidChange(self)
-        }
-    }
-    var delegate: PresentationObjectDelegate?
-    
-    var editTimeText: String {
-        switch mode {
-        case .enter: return "⌛ Expected Time"
-        case .get: return "⌛ Available Time"
-        }
-    }
-    
-    var titleText: String {
-        switch mode {
-        case .enter: return  "📬 \(StringStore.enterTask)"
-        case .get: return  "🔨 \(StringStore.getTask)"
-        }
-    }
-    
-    var actionText: String {
-        switch mode {
-        case .enter: return StringStore.enterTask
-        case .get: return StringStore.getTask
-        }
-    }
-}
+extension TaskActionDelegate {
+    func enterNamePressed() {}
+    func enterNameDoneEditing() {}
 
-struct EditTaskModel {
+    func enterTimePressed() {}
+    func enterTimeDoneEditing() {}
 
-    var delegate: EditTaskModelDelegate?
-    
-    var name: String? {
-        didSet {
-            delegate?.editTaskModelDidChange(self)
-        }
-    }
-    var time: Int?
-    
-    init(name: String? = nil, time: Int? = nil, delegate: EditTaskModelDelegate? = nil) {
-        self.name = name
-        self.time = time
-        self.delegate = delegate
-    }
-    
-    func isFilled(_ enterTaskMode: Bool) -> Bool {
-        if enterTaskMode {
-            return time != nil && (name != nil && name != "")
-        } else {
-            return time != nil
-        }
-    }
-}
-
-protocol EditTaskModelDelegate {
-    func editTaskModelDidChange(_ editTaskModel: EditTaskModel)
+    func enterDifficultyPressed() {}
+    func enterDifficultyDoneEditing() {}
 }
 
 class TaskActionViewController: UIViewController {

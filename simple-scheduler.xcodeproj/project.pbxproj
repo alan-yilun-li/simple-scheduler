@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4765D3DF218112150020805D /* TaskActionPresentationObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4765D3DE218112150020805D /* TaskActionPresentationObject.swift */; };
+		4765D3E1218112400020805D /* EditTaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4765D3E0218112400020805D /* EditTaskModel.swift */; };
+		4765D3E5218112920020805D /* FriendlyTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4765D3E4218112920020805D /* FriendlyTips.swift */; };
 		E71675D22169480D004BA952 /* AYLDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71675D12169480D004BA952 /* AYLDependencies.swift */; };
 		E71675D4216949A1004BA952 /* StringStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71675D3216949A1004BA952 /* StringStore.swift */; };
 		E71B86E221693A20007CB3FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71B86E121693A20007CB3FC /* AppDelegate.swift */; };
@@ -24,7 +27,6 @@
 		E7CA5940216E4DBA005B3ED6 /* PopupPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7CA593F216E4DBA005B3ED6 /* PopupPresentationController.swift */; };
 		E7CA5942216E4DC8005B3ED6 /* ViewExpansionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7CA5941216E4DC8005B3ED6 /* ViewExpansionAnimator.swift */; };
 		E7CA5946216E50AA005B3ED6 /* UIButton+ViewExpansionAnimatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7CA5945216E50AA005B3ED6 /* UIButton+ViewExpansionAnimatable.swift */; };
-		E7D8C7B821802FAC002EB5F1 /* TaskActionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D8C7B721802FAC002EB5F1 /* TaskActionDelegate.swift */; };
 		E7F04C0A2176E7D400FD6B96 /* TaskPlanning.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E7F04C082176E7D400FD6B96 /* TaskPlanning.xcdatamodeld */; };
 		E7F04C0C2176E9C800FD6B96 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7F04C0B2176E9C800FD6B96 /* Task.swift */; };
 		E7F04C102176EC1600FD6B96 /* CoreData+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7F04C0F2176EC1600FD6B96 /* CoreData+Helpers.swift */; };
@@ -37,6 +39,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4765D3DE218112150020805D /* TaskActionPresentationObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskActionPresentationObject.swift; sourceTree = "<group>"; };
+		4765D3E0218112400020805D /* EditTaskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTaskModel.swift; sourceTree = "<group>"; };
+		4765D3E4218112920020805D /* FriendlyTips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendlyTips.swift; sourceTree = "<group>"; };
 		E71675D12169480D004BA952 /* AYLDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AYLDependencies.swift; sourceTree = "<group>"; };
 		E71675D3216949A1004BA952 /* StringStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringStore.swift; sourceTree = "<group>"; };
 		E71B86DE21693A20007CB3FC /* Simple Scheduler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Simple Scheduler.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -56,7 +61,6 @@
 		E7CA593F216E4DBA005B3ED6 /* PopupPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupPresentationController.swift; sourceTree = "<group>"; };
 		E7CA5941216E4DC8005B3ED6 /* ViewExpansionAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewExpansionAnimator.swift; sourceTree = "<group>"; };
 		E7CA5945216E50AA005B3ED6 /* UIButton+ViewExpansionAnimatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+ViewExpansionAnimatable.swift"; sourceTree = "<group>"; };
-		E7D8C7B721802FAC002EB5F1 /* TaskActionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskActionDelegate.swift; sourceTree = "<group>"; };
 		E7F04C092176E7D400FD6B96 /* TaskPlanning.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TaskPlanning.xcdatamodel; sourceTree = "<group>"; };
 		E7F04C0B2176E9C800FD6B96 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		E7F04C0F2176EC1600FD6B96 /* CoreData+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreData+Helpers.swift"; sourceTree = "<group>"; };
@@ -79,6 +83,40 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4765D3DB218111C90020805D /* Task Action */ = {
+			isa = PBXGroup;
+			children = (
+				4765D3E22181124F0020805D /* Models */,
+				E7F04C152177016F00FD6B96 /* TaskActionViewController.swift */,
+			);
+			path = "Task Action";
+			sourceTree = "<group>";
+		};
+		4765D3DC218111DB0020805D /* Sketch Pad */ = {
+			isa = PBXGroup;
+			children = (
+				E7537751217D5E0400920BED /* SketchPadViewController.swift */,
+			);
+			path = "Sketch Pad";
+			sourceTree = "<group>";
+		};
+		4765D3DD218111EC0020805D /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				4765D3E4218112920020805D /* FriendlyTips.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		4765D3E22181124F0020805D /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				4765D3DE218112150020805D /* TaskActionPresentationObject.swift */,
+				4765D3E0218112400020805D /* EditTaskModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		E71675D0216947F5004BA952 /* Page1 */ = {
 			isa = PBXGroup;
 			children = (
@@ -162,11 +200,11 @@
 		E77C584821695C550028D1B6 /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				E7F04C152177016F00FD6B96 /* TaskActionViewController.swift */,
+				4765D3DD218111EC0020805D /* Helpers */,
+				4765D3DC218111DB0020805D /* Sketch Pad */,
+				4765D3DB218111C90020805D /* Task Action */,
 				E7FFEB01216AB120001CE6AD /* LandingViewController.swift */,
 				E7FFEB05216ABE8E001CE6AD /* LandingPresenter.swift */,
-				E7537751217D5E0400920BED /* SketchPadViewController.swift */,
-				E7D8C7B721802FAC002EB5F1 /* TaskActionDelegate.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -311,11 +349,13 @@
 				E71B86F421693BA3007CB3FC /* UserDefaults+Keys.swift in Sources */,
 				E7FFEB06216ABE8E001CE6AD /* LandingPresenter.swift in Sources */,
 				E7FFEB02216AB120001CE6AD /* LandingViewController.swift in Sources */,
-				E7D8C7B821802FAC002EB5F1 /* TaskActionDelegate.swift in Sources */,
+				4765D3E1218112400020805D /* EditTaskModel.swift in Sources */,
 				E7537752217D5E0400920BED /* SketchPadViewController.swift in Sources */,
 				E71B86E421693A20007CB3FC /* OnboardingRootController.swift in Sources */,
 				E7FFEB04216AB87C001CE6AD /* NSLayoutConstraint+Multiplier.swift in Sources */,
 				E77C5850216969F20028D1B6 /* CleanPushTransitionAnimator.swift in Sources */,
+				4765D3DF218112150020805D /* TaskActionPresentationObject.swift in Sources */,
+				4765D3E5218112920020805D /* FriendlyTips.swift in Sources */,
 				E7F04C102176EC1600FD6B96 /* CoreData+Helpers.swift in Sources */,
 				E7CA5946216E50AA005B3ED6 /* UIButton+ViewExpansionAnimatable.swift in Sources */,
 				E7CA5942216E4DC8005B3ED6 /* ViewExpansionAnimator.swift in Sources */,
