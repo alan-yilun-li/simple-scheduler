@@ -67,18 +67,11 @@ extension LandingPresenter {
     }
     
     @objc func didPressTaskAction(_ sender: UIButton) {
-        let isEnterMode = self.taskActionViewController.mode == .enter
-        if isEnterMode {
-            taskActionViewController.mode = .get
-            viewController?.taskActionButton.setTitle("Enter Task", for: .normal)
-        } else {
-            taskActionViewController.mode = .enter
-            viewController?.taskActionButton.setTitle("Get Task", for: .normal)
-        }
+        taskActionViewController.mode == .enter ? switchToGetMode() : switchToEnterMode()
     }
     
     @objc func didPressFriendlyTip(_ sender: UIButton) {
-        
+        switchToEnterMode()
     }
     
     @objc func didPressScreen(_ sender: UITapGestureRecognizer) {
@@ -169,5 +162,19 @@ extension LandingPresenter: NSFetchedResultsControllerDelegate {
     
     @objc func managedObjectContextDidSave(_ notification: Notification) {
         print("TesttesT")
+    }
+}
+
+// MARK: - Private Helpers
+private extension LandingPresenter {
+
+    func switchToGetMode() {
+        taskActionViewController.mode = .get
+        viewController?.taskActionButton.setTitle("Enter Task", for: .normal)
+    }
+
+    func switchToEnterMode() {
+        taskActionViewController.mode = .enter
+        viewController?.taskActionButton.setTitle("Get Task", for: .normal)
     }
 }
