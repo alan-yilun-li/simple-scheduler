@@ -367,7 +367,7 @@ private extension TaskActionViewController {
         ])
     }
     
-    func themeButton(_ button: UIButton, filled: Bool, withBorder: Bool) {
+    func themeButton(_ button: UIButton, filled: Bool, withBorder: Bool = false) {
         if filled {
             button.setTitleColor(theme.colours.mainColor, for: .normal)
             button.backgroundColor = theme.colours.secondaryColor
@@ -430,16 +430,15 @@ extension TaskActionViewController: PresentationObjectDelegate {
 extension TaskActionViewController: EditTaskModelDelegate {
 
     func editTaskModelDidChange(_ editTaskModel: EditTaskModel) {
-        if editTaskModel.isFilled(mode == .enter) {
-
-        }
+        let isFilled = editTaskModel.isFilled(mode == .enter)
+        themeButton(taskActionButton, filled: isFilled, withBorder: !isFilled)
     }
 
     func setTime(_ hours: Int, minutes: Int) {
         self.editingModel.time = (hours * 60) + minutes
         if hours == 0 {
             guard minutes != 0 else {
-                self.themeButton(self.pickTimeButton, false)
+                self.themeButton(self.pickTimeButton, filled: false)
                 return
             }
             self.pickTimeButton.setTitle("⌛ \(minutes)mins", for: .normal)
@@ -448,18 +447,18 @@ extension TaskActionViewController: EditTaskModelDelegate {
         } else {
             self.pickTimeButton.setTitle("⌛ \(hours)hrs \(minutes)mins", for: .normal)
         }
-        self.themeButton(self.pickTimeButton, true)
+        self.themeButton(self.pickTimeButton, filled: true)
     }
 
     func setName(_ name: String?) {
         self.editingModel.name = name
         if let name = self.editingModel.name, !name.isEmpty {
             self.pickNameButton.setTitle("✏️ \(name)", for: .normal)
-            self.themeButton(self.pickNameButton, true)
+            self.themeButton(self.pickNameButton, filled: true)
         } else {
             self.taskNameField.text = ""
             self.pickNameButton.setTitle("✏️ Task Name", for: .normal)
-            self.themeButton(self.pickNameButton, false)
+            self.themeButton(self.pickNameButton, filled: false)
         }
     }
 }

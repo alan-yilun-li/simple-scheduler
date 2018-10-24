@@ -51,9 +51,8 @@ class LandingViewController: UIViewController {
             button.layer.shadowOffset = CGSize(width: 3, height: 3)
 
             return button
-        }
-    }
-    
+    }()
+
     /// Enter or get task view
     private var mainContentView: UIView!
     
