@@ -8,6 +8,45 @@
 
 import UIKit
 
+protocol PresentationObjectDelegate {
+    func modeDidChange(_ presentationObject: TaskActionPresentationObject)
+}
+
+struct TaskActionPresentationObject {
+    
+    enum Mode {
+        case enter, get
+    }
+    
+    var mode: Mode {
+        didSet {
+            delegate?.modeDidChange(self)
+        }
+    }
+    var delegate: PresentationObjectDelegate?
+    
+    var editTimeText: String {
+        switch mode {
+        case .enter: return "⌛ Expected Time"
+        case .get: return "⌛ Available Time"
+        }
+    }
+    
+    var titleText: String {
+        switch mode {
+        case .enter: return  "📬 Enter Task"
+        case .get: return  "🔨 Get Task"
+        }
+    }
+    
+    var actionText: String {
+        switch mode {
+        case .enter: return "Enter Task"
+        case .get: return "Get Task"
+        }
+    }
+}
+
 struct EditingTaskModel {
     
     var name: String?
@@ -18,33 +57,19 @@ struct EditingTaskModel {
         self.time = time
     }
     
-    var isFilled: Bool {
-        return time != nil && name != nil
+    func isFilled(_ enterTaskMode: Bool) -> Bool {
+        if enterTaskMode {
+            return time != nil && (name != nil && name != "")
+        } else {
+            return time != nil
+        }
     }
 }
 
-protocol EnterTaskDelegate: class {
-    func enterNamePressed()
-    func enterNameDoneEditing()
-    func enterTimePressed()
-    func enterTimeDoneEditing()
-    func enterDifficultyPressed()
-}
-
-extension EnterTaskDelegate {
-    func enterNamePressed() {}
-    func enterNameDoneEditing() {}
-
-    func enterTimePressed() {}
-    func enterTimeDoneEditing() {}
-
-    func enterDifficultyPressed() {}
-}
-
-class EnterTaskViewController: UIViewController {
+class TaskActionViewController: UIViewController {
     
     private enum TaskPartTag: Int {
-        case name, difficulty, time, enter
+        case name, difficulty, time, action
     }
     
     private struct Constants {
@@ -57,12 +82,20 @@ class EnterTaskViewController: UIViewController {
         static let defaultExpectedTime: TimeInterval = 60 * 5
     }
     
+    var tasks = [Task]()
+    var mode: TaskActionPresentationObject.Mode {
+        get { return presentationObject.mode }
+        set { presentationObject.mode = newValue }
+    }
+    
+    fileprivate lazy var presentationObject = TaskActionPresentationObject(mode: .enter, delegate: self)
+    
     private let dependencies: AYLDependencies
     private var theme: AYLTheme {
         return dependencies.theme
     }
     
-    weak var delegate: EnterTaskDelegate?
+    weak var delegate: TaskActionDelegate?
     
     var editingModel = EditingTaskModel()
     
@@ -82,7 +115,7 @@ class EnterTaskViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = theme.fonts.small
         label.textColor = theme.colours.mainTextColor
-        label.text = "📬 Enter Task"
+        label.text = presentationObject.titleText
         return label
     }()
     
@@ -123,7 +156,7 @@ class EnterTaskViewController: UIViewController {
         let button = UIButton(type: .system)
         button.tag = TaskPartTag.time.rawValue
         customizeButtonFontAndShape(button)
-        button.setTitle("⌛ Expected Time", for: .normal)
+        button.setTitle(presentationObject.editTimeText, for: .normal)
         button.addTarget(self, action: #selector(pickTimePressed), for: .touchUpInside)
         return button
     }()
@@ -151,12 +184,12 @@ class EnterTaskViewController: UIViewController {
         return timePicker
     }()
     
-    private lazy var enterTaskButton: UIButton = {
+    private lazy var taskActionButton: UIButton = {
         let button = UIButton(type: .system)
-        button.tag = TaskPartTag.enter.rawValue
+        button.tag = TaskPartTag.action.rawValue
         customizeButtonFontAndShape(button, mainButton: true)
-        button.setTitle(StringStore.enterTask, for: .normal)
-        button.addTarget(self, action: #selector(enterTaskPressed), for: .touchUpInside)
+        button.setTitle(presentationObject.actionText, for: .normal)
+        button.addTarget(self, action: #selector(taskActionPressed), for: .touchUpInside)
         return button
     }()
     
@@ -181,7 +214,7 @@ class EnterTaskViewController: UIViewController {
 }
 
 // MARK: - Actions
-extension EnterTaskViewController {
+extension TaskActionViewController {
     
     @objc func pickNamePressed(_ sender: UIButton) {
         delegate?.enterNamePressed()
@@ -192,10 +225,10 @@ extension EnterTaskViewController {
         }
         isolateTaskPart(tag) { [weak self] in
             guard let `self` = self else { return }
-            self.editingModel.name = self.taskNameField.text
+            self.editingModel.name = self.taskNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
             self.taskNameField.removeFromSuperview()
             
-            if let name = self.editingModel.name, !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            if let name = self.editingModel.name, !name.isEmpty {
                 self.pickNameButton.setTitle("✏️ \(name)", for: .normal)
                 self.themeButton(self.pickNameButton, true)
             } else {
@@ -252,23 +285,34 @@ extension EnterTaskViewController {
         restoreStateAfterIsolation()
     }
     
-    @objc func enterTaskPressed(_ sender: UIButton) {
-        guard editingModel.isFilled else {
-            sender.shake()
+    @objc func taskActionPressed(_ sender: UIButton) {
+        switch mode {
+        case .enter:
+            guard editingModel.isFilled(true) else {
+                sender.shake()
+                return
+            }
+            let context = dependencies.persistentContainer.viewContext
+            context.performChanges {
+                _ = Task.insert(into: context, name: self.editingModel.name!,
+                                time: Int16(clamping: self.editingModel.time!), difficulty: 0)
+            }
+            // Add some kind of reward message or button
+            clearInputs()
+        case .get:
+            guard editingModel.isFilled(false) else {
+                sender.shake()
+                return
+            }
             return
+            
+            
         }
-        let context = dependencies.persistentContainer.viewContext
-        context.performChanges {
-            _ = Task.insert(into: context, name: self.editingModel.name!,
-                            time: Int16(clamping: self.editingModel.time!), difficulty: 0)
-        }
-        // Add some kind of reward message or button
-        clearInputs()
     }
 }
 
 // MARK: - Dynamic View Modification
-extension EnterTaskViewController {
+extension TaskActionViewController {
 
     private func isolateTaskPart(_ taskPart: TaskPartTag, restoreStateHandler: (() -> Void)? = nil) {
         for part in mainStackView.arrangedSubviews where part.tag != taskPart.rawValue {
@@ -280,6 +324,7 @@ extension EnterTaskViewController {
     func restoreStateAfterIsolation() {
         UIView.animate(withDuration: 0.3) {
             for view in self.mainStackView.arrangedSubviews {
+                guard self.mode == .enter || view !== self.pickNameButton else { continue }
                 view.isHidden = false
             }
             self.restoreIsolatedStateHandler?()
@@ -290,14 +335,14 @@ extension EnterTaskViewController {
         taskNameField.text = nil
         themeButton(pickNameButton, false)
         themeButton(pickTimeButton, false)
+        pickTimeButton.setTitle(presentationObject.editTimeText, for: .normal)
         pickNameButton.setTitle("✏️ Task Name", for: .normal)
-        pickTimeButton.setTitle("⌛ Expected Time", for: .normal)
         timePicker.countDownDuration = Constants.defaultExpectedTime
     }
 }
 
 // MARK: - View Setup
-private extension EnterTaskViewController {
+private extension TaskActionViewController {
     
     func setupViews() {
         view.backgroundColor = theme.colours.mainColor
@@ -314,7 +359,7 @@ private extension EnterTaskViewController {
         view.addSubview(mainStackView)
         mainStackView.addArrangedSubview(pickNameButton)
         mainStackView.addArrangedSubview(pickTimeButton)
-        mainStackView.addArrangedSubview(enterTaskButton)
+        mainStackView.addArrangedSubview(taskActionButton)
     }
     
     func setupConstraints() {
@@ -360,10 +405,29 @@ private extension EnterTaskViewController {
 }
 
 // MARK: - UITextField Delegate
-extension EnterTaskViewController: UITextFieldDelegate {
+extension TaskActionViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.restoreStateAfterIsolation()
         return true
+    }
+}
+
+// MARK: - PresentationObject Delegate
+extension TaskActionViewController: PresentationObjectDelegate {
+    func modeDidChange(_ presentationObject: TaskActionPresentationObject) {
+        switch presentationObject.mode {
+        case .enter:
+            UIView.animate(withDuration: 0.3) {
+                self.pickNameButton.isHidden = false
+            }
+        case .get:
+            self.pickNameButton.isHidden = true
+        }
+        UIView.animate(withDuration: 0.3) {
+            self.clearInputs()
+            self.titleLabel.text = presentationObject.titleText
+            self.taskActionButton.setTitle(presentationObject.actionText, for: .normal)
+        }
     }
 }

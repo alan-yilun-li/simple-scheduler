@@ -32,7 +32,7 @@ class LandingViewController: UIViewController {
         return dependencies.theme
     }
     
-    private lazy var getTaskButton = makeButton(StringStore.getTask)
+    lazy var taskActionButton = makeButton(StringStore.getTask)
     
     /// Enter or get task view
     private var mainContentView: UIView!
@@ -116,41 +116,9 @@ class LandingViewController: UIViewController {
         super.viewDidLayoutSubviews()
         containerScrollView.contentSize = view.frame.size
     }
-    
-    func embedViewInCenter(_ viewForEmbedding: UIView) {
-        mainContentView = viewForEmbedding
-        containerScrollView.addSubview(viewForEmbedding)
-        viewForEmbedding.translatesAutoresizingMaskIntoConstraints = false
-        viewForEmbedding.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 999), for: .vertical)
-        let constraints = [
-            viewForEmbedding.bottomAnchor.constraint(equalTo: getTaskButton.topAnchor, constant: -Constants.defaultSpacing * 2),
-            viewForEmbedding.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing * 1.5),
-            viewForEmbedding.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing * 1.5)
-        ]
-        constraints.forEach { $0.priority = UILayoutPriority(rawValue: 999) }
-        NSLayoutConstraint.activate(constraints)
-    }
-    
-    func setupSketchPadView() {
-        guard let sketchPadView = presenter.sketchPadVC.view else {
-            assertionFailure("sketchpad view should exist")
-            return
-        }
-        sketchPadView.translatesAutoresizingMaskIntoConstraints = false
-        containerScrollView.addSubview(sketchPadView)
-        
-        sketchPadHeightConstraint = sketchPadView.heightAnchor.constraint(equalToConstant: 0)
-        sketchPadHeightConstraint.priority = .required
-        
-        sketchPadMainContentConstraint = sketchPadView.bottomAnchor.constraint(equalTo: mainContentView.topAnchor, constant: -Constants.defaultSpacing * 2)
-    
-        NSLayoutConstraint.activate([
-            sketchPadView.topAnchor.constraint(equalTo: taskStoreLabel.bottomAnchor, constant: Constants.defaultSpacing),
-            sketchPadView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing * 1.5),
-            sketchPadView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing * 1.5),
-            sketchPadMainContentConstraint
-        ])
-    }
+}
+
+extension LandingViewController {
     
     func showSketchPadView() {
         let sketchPadVC = self.presenter.sketchPadVC
@@ -183,26 +151,81 @@ class LandingViewController: UIViewController {
 // MARK: - View Setup
 private extension LandingViewController {
     
+    func addSketchPadVC() {
+        presenter.sketchPadVC = SketchPadViewController(dependencies: dependencies)
+        addChild(presenter.sketchPadVC)
+
+        guard let sketchPadView = presenter.sketchPadVC.view else {
+            assertionFailure("sketchpad view should exist")
+            return
+        }
+        sketchPadView.translatesAutoresizingMaskIntoConstraints = false
+        containerScrollView.addSubview(sketchPadView)
+        
+        sketchPadHeightConstraint = sketchPadView.heightAnchor.constraint(equalToConstant: 0)
+        sketchPadHeightConstraint.priority = .required
+        
+        sketchPadMainContentConstraint = sketchPadView.bottomAnchor.constraint(equalTo: mainContentView.topAnchor, constant: -Constants.defaultSpacing * 2)
+        
+        NSLayoutConstraint.activate([
+            sketchPadView.topAnchor.constraint(equalTo: taskStoreLabel.bottomAnchor, constant: Constants.defaultSpacing),
+            sketchPadView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing * 1.5),
+            sketchPadView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing * 1.5),
+            sketchPadMainContentConstraint
+        ])
+        presenter.sketchPadVC.didMove(toParent: self)
+    }
+    
+    func addTaskActionController() {
+        guard let viewForEmbedding = presenter.taskActionViewController.view else {
+            assertionFailure("view should exist")
+            return
+        }
+        addChild(presenter.taskActionViewController)
+
+        mainContentView = viewForEmbedding
+        containerScrollView.addSubview(viewForEmbedding)
+        viewForEmbedding.translatesAutoresizingMaskIntoConstraints = false
+        viewForEmbedding.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 999), for: .vertical)
+        
+        
+        if let sketchPadVC = presenter.sketchPadVC, sketchPadVC.view.superview != nil {
+            sketchPadMainContentConstraint = sketchPadVC.view.bottomAnchor.constraint(equalTo: mainContentView.topAnchor, constant: -Constants.defaultSpacing * 2)
+            sketchPadMainContentConstraint.isActive = true
+        }
+        
+        let constraints = [
+            viewForEmbedding.bottomAnchor.constraint(equalTo: taskActionButton.topAnchor, constant: -Constants.defaultSpacing * 2),
+            viewForEmbedding.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing * 1.5),
+            viewForEmbedding.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing * 1.5)
+        ]
+        constraints.forEach { $0.priority = UILayoutPriority(rawValue: 999) }
+        NSLayoutConstraint.activate(constraints)
+
+        presenter.taskActionViewController.didMove(toParent: self)
+    }
+    
     func setupViews() {
         view.addGestureRecognizer(UITapGestureRecognizer(target: presenter, action: #selector(LandingPresenter.didPressScreen(_:))))
         
         view.backgroundColor = theme.colours.mainColor
-        theme(getTaskButton, theme.colours.mainColor, backgroundColor: theme.colours.secondaryColor)
+        theme(taskActionButton, theme.colours.mainColor, backgroundColor: theme.colours.secondaryColor)
         
         view.addSubview(containerScrollView)
         
-        containerScrollView.addSubview(getTaskButton)
+        containerScrollView.addSubview(taskActionButton)
         containerScrollView.addSubview(taskStoreLabel)
         containerScrollView.addSubview(welcomeLabel)
         containerScrollView.addSubview(settingsButton)
         containerScrollView.addSubview(friendlyTipButton)
         
-        presenter.addContentController(EnterTaskViewController(dependencies: dependencies))
+        addTaskActionController()
+        addSketchPadVC()
+        
         presenter.updateFriendlyTipButton()
-        presenter.addSketchPadVC()
         
         settingsButton.addTarget(presenter, action: #selector(presenter.didPressSettings), for: .touchUpInside)
-        getTaskButton.addTarget(presenter, action: #selector(presenter.didPressGetTask), for: .touchUpInside)
+        taskActionButton.addTarget(presenter, action: #selector(presenter.didPressTaskAction), for: .touchUpInside)
         
         NotificationCenter.default.addObserver(presenter, selector: #selector(LandingPresenter.keyboardWillChange), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
         
@@ -241,11 +264,11 @@ private extension LandingViewController {
 
             taskStoreLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing),
             taskStoreLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.defaultSpacing),
-            taskStoreLabel.bottomAnchor.constraint(lessThanOrEqualTo: getTaskButton.topAnchor, constant: -Constants.defaultSpacing),
+            taskStoreLabel.bottomAnchor.constraint(lessThanOrEqualTo: taskActionButton.topAnchor, constant: -Constants.defaultSpacing),
 
-            getTaskButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing * 2.5),
-            getTaskButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing * 2.5),
-            getTaskButton.bottomAnchor.constraint(equalTo: containerScrollView.safeAreaLayoutGuide.bottomAnchor, constant: -Constants.defaultSpacing)
+            taskActionButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing * 2.5),
+            taskActionButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing * 2.5),
+            taskActionButton.bottomAnchor.constraint(equalTo: containerScrollView.safeAreaLayoutGuide.bottomAnchor, constant: -Constants.defaultSpacing)
         ] + highPriorityConstraints)
     }
     

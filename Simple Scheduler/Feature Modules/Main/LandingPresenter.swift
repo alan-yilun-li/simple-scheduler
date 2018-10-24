@@ -12,7 +12,11 @@ import CoreData
 class LandingPresenter: NSObject {
     
     weak var viewController: LandingViewController?
-    var currentContentVC: UIViewController?
+    lazy var taskActionViewController: TaskActionViewController = {
+        let controller = TaskActionViewController(dependencies: dependencies)
+        controller.delegate = self
+        return controller
+    }()
 
     private let dependencies: AYLDependencies
     private var theme: AYLTheme {
@@ -21,12 +25,17 @@ class LandingPresenter: NSObject {
     
     private lazy var taskFetchRequest: NSFetchRequest<Task> = {
         let request = Task.sortedFetchRequest
-        request.fetchBatchSize = 10
+        // Only need to fulfill one at a time
         request.returnsObjectsAsFaults = true
         return request
     }()
     
-    private var tasks = [Task]()
+    private var tasks = [Task]() {
+        // Forwarding to task action controller, also forwards mutations since Array is a value-type
+        didSet {
+            taskActionViewController.tasks = tasks
+        }
+    }
     
     var sketchPadVC: SketchPadViewController!
     var storeDescription: String! {
@@ -53,16 +62,19 @@ class LandingPresenter: NSObject {
 // MARK: - Actions
 extension LandingPresenter {
     
-    @objc func didPressEnterTask(_ sender: UIButton) {
-       assertionFailure("wat")
-    }
-    
     @objc func didPressSettings(_ sender: UIButton) {
         
     }
     
-    @objc func didPressGetTask(_ sender: UIButton) {
-        sender.shake()
+    @objc func didPressTaskAction(_ sender: UIButton) {
+        let isEnterMode = self.taskActionViewController.mode == .enter
+        if isEnterMode {
+            taskActionViewController.mode = .get
+            viewController?.taskActionButton.setTitle("Enter Task", for: .normal)
+        } else {
+            taskActionViewController.mode = .enter
+            viewController?.taskActionButton.setTitle("Get Task", for: .normal)
+        }
     }
     
     @objc func didPressFriendlyTip(_ sender: UIButton) {
@@ -96,7 +108,7 @@ extension LandingPresenter {
 }
 
 // MARK: - Enter Task Delegate
-extension LandingPresenter: EnterTaskDelegate {
+extension LandingPresenter: TaskActionDelegate {
     
     func enterNamePressed() {
         sketchPadVC.textView.resignFirstResponder()
@@ -107,49 +119,9 @@ extension LandingPresenter: EnterTaskDelegate {
         viewController?.showSketchPadView()
     }
     
-    func pressedEnterTime() {
+    func taskActionButtonPressed() {
         
     }
-    
-    func enterTimeDoneEditing() {
-    }
-    
-    func pressedEnterDifficulty() {
-        
-    }
-
-}
-
-// MARK: - View Changing Methods
-extension LandingPresenter: UIViewControllerTransitioningDelegate {
-    
-    func addSketchPadVC() {
-        guard let vc = viewController else { return }
-        sketchPadVC = SketchPadViewController(dependencies: dependencies)
-        vc.addChild(sketchPadVC)
-        vc.setupSketchPadView()
-        sketchPadVC.didMove(toParent: vc)
-    }
-    
-    func addContentController(_ child: UIViewController) {
-        guard let vc = viewController else { return }
-        
-        if let enterTaskVC = child as? EnterTaskViewController {
-            enterTaskVC.delegate = self
-        }
-        vc.addChild(child)
-        vc.embedViewInCenter(child.view)
-        child.didMove(toParent: vc)
-        currentContentVC = child
-    }
-    
-    func removeContentController(_ child: UIViewController) {
-        child.willMove(toParent: nil)
-        child.view.removeFromSuperview()
-        child.removeFromParent()
-        currentContentVC = nil
-    }
-
 }
 
 // MARK: - Core Data Support
