@@ -22,6 +22,8 @@ class LandingPresenter: NSObject {
     private var theme: AYLTheme {
         return dependencies.theme
     }
+
+    var currentFriendlyTip: FriendlyTip!
     
     private lazy var taskFetchRequest: NSFetchRequest<Task> = {
         let request = Task.sortedFetchRequest
@@ -51,7 +53,8 @@ class LandingPresenter: NSObject {
     }
     
     func updateFriendlyTipButton() {
-        viewController?.friendlyTipButton.setTitle(StringStore.friendlyTips.randomElement(), for: .normal)
+        currentFriendlyTip = FriendlyTip.Defaults.array.randomElement()
+        viewController?.friendlyTipButton.setTitle(currentFriendlyTip.motivationText, for: .normal)
     }
     
     private func updateStoreDescription(_ tasksPlanned: Int, _ tasksCompleted: Int) {
@@ -72,6 +75,9 @@ extension LandingPresenter {
     
     @objc func didPressFriendlyTip(_ sender: UIButton) {
         switchToEnterMode()
+        taskActionViewController.setName(currentFriendlyTip.taskName)
+        taskActionViewController.setTime(currentFriendlyTip.taskTime / 60, minutes: currentFriendlyTip.taskTime % 60)
+        updateFriendlyTipButton()
     }
     
     @objc func didPressScreen(_ sender: UITapGestureRecognizer) {

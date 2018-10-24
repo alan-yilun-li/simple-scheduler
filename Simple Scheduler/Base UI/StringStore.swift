@@ -11,13 +11,13 @@ import Foundation
 struct StringStore {
     
     // Friendly Tips
-    static let friendlyTips = [
-        NSLocalizedString("Call your mom? She probably misses you. ☎️", comment: "call parents"),
-        NSLocalizedString("Trim your fingernails? ✌️", comment: "trim fingernails"),
-        NSLocalizedString("How about some meditation? 🌱", comment: "meditate"),
-        NSLocalizedString("Have you had your 8 cups? Drink some water? 💧", comment: "drink water"),
-        NSLocalizedString("Got time for some quick exercise? 💪", comment: "get exercise")
-    ]
+    struct FriendlyTips {
+        static let callMom = NSLocalizedString("Call your mom? She probably misses you. ☎️", comment: "call parents")
+        static let trimFingernails = NSLocalizedString("Trim your fingernails? ✌️", comment: "trim fingernails")
+        static let meditation = NSLocalizedString("How about some meditation? 🌱", comment: "meditate")
+        static let drinkWater = NSLocalizedString("Have you had your 8 cups? Drink some water? 💧", comment: "drink water")
+        static let exercise = NSLocalizedString("Got time for some quick exercise? 💪", comment: "get exercise")
+    }
 
     // Login Page
     static let simple = NSLocalizedString("Simple", comment: "simple")
