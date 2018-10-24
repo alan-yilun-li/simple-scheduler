@@ -170,11 +170,11 @@ private extension LandingPresenter {
 
     func switchToGetMode() {
         taskActionViewController.mode = .get
-        viewController?.taskActionButton.setTitle("Enter Task", for: .normal)
+        viewController?.taskActionButton.setTitle(StringStore.enterTask, for: .normal)
     }
 
     func switchToEnterMode() {
         taskActionViewController.mode = .enter
-        viewController?.taskActionButton.setTitle("Get Task", for: .normal)
+        viewController?.taskActionButton.setTitle(StringStore.getTask, for: .normal)
     }
 }

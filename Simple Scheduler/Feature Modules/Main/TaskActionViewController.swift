@@ -34,27 +34,34 @@ struct TaskActionPresentationObject {
     
     var titleText: String {
         switch mode {
-        case .enter: return  "📬 Enter Task"
-        case .get: return  "🔨 Get Task"
+        case .enter: return  "📬 \(StringStore.enterTask)"
+        case .get: return  "🔨 \(StringStore.getTask)"
         }
     }
     
     var actionText: String {
         switch mode {
-        case .enter: return "Enter Task"
-        case .get: return "Get Task"
+        case .enter: return StringStore.enterTask
+        case .get: return StringStore.getTask
         }
     }
 }
 
-struct EditingTaskModel {
+struct EditTaskModel {
+
+    var delegate: EditTaskModelDelegate?
     
-    var name: String?
+    var name: String? {
+        didSet {
+            delegate?.editTaskModelDidChange(self)
+        }
+    }
     var time: Int?
     
-    init(name: String? = nil, time: Int? = nil) {
+    init(name: String? = nil, time: Int? = nil, delegate: EditTaskModelDelegate? = nil) {
         self.name = name
         self.time = time
+        self.delegate = delegate
     }
     
     func isFilled(_ enterTaskMode: Bool) -> Bool {
@@ -64,6 +71,10 @@ struct EditingTaskModel {
             return time != nil
         }
     }
+}
+
+protocol EditTaskModelDelegate {
+    func editTaskModelDidChange(_ editTaskModel: EditTaskModel)
 }
 
 class TaskActionViewController: UIViewController {
@@ -97,7 +108,7 @@ class TaskActionViewController: UIViewController {
     
     weak var delegate: TaskActionDelegate?
     
-    var editingModel = EditingTaskModel()
+    var editingModel = EditTaskModel()
     
     override var inputView: UIView? {
         let input = timePicker
@@ -187,7 +198,7 @@ class TaskActionViewController: UIViewController {
     private lazy var taskActionButton: UIButton = {
         let button = UIButton(type: .system)
         button.tag = TaskPartTag.action.rawValue
-        customizeButtonFontAndShape(button, mainButton: true)
+        customizeButtonFontAndShape(button, isMainButton: true)
         button.setTitle(presentationObject.actionText, for: .normal)
         button.addTarget(self, action: #selector(taskActionPressed), for: .touchUpInside)
         return button
@@ -225,17 +236,10 @@ extension TaskActionViewController {
         }
         isolateTaskPart(tag) { [weak self] in
             guard let `self` = self else { return }
-            self.editingModel.name = self.taskNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
             self.taskNameField.removeFromSuperview()
-            
-            if let name = self.editingModel.name, !name.isEmpty {
-                self.pickNameButton.setTitle("✏️ \(name)", for: .normal)
-                self.themeButton(self.pickNameButton, true)
-            } else {
-                self.taskNameField.text = ""
-                self.pickNameButton.setTitle("✏️ Task Name", for: .normal)
-                self.themeButton(self.pickNameButton, false)
-            }
+
+            self.setName(self.taskNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines))
+
             self.view.endEditing(true)
             self.resignFirstResponder()
             self.delegate?.enterNameDoneEditing()
@@ -265,18 +269,7 @@ extension TaskActionViewController {
             let hours = Calendar.current.component(.hour, from: self.timePicker.date)
             let minutes = Calendar.current.component(.minute, from: self.timePicker.date)
 
-            self.editingModel.time = (hours * 60) + minutes
-            if hours == 0 {
-                guard minutes != 0 else {
-                    return
-                }
-                self.pickTimeButton.setTitle("⌛ \(minutes)mins", for: .normal)
-            } else if minutes == 0 {
-                self.pickTimeButton.setTitle("⌛ \(hours)hrs", for: .normal)
-            } else {
-                self.pickTimeButton.setTitle("⌛ \(hours)hrs \(minutes)mins", for: .normal)
-            }
-            self.themeButton(self.pickTimeButton, true)
+            self.setTime(hours, minutes: minutes)
         }
         self.becomeFirstResponder()
     }
@@ -374,7 +367,7 @@ private extension TaskActionViewController {
         ])
     }
     
-    func themeButton(_ button: UIButton, _ filled: Bool) {
+    func themeButton(_ button: UIButton, filled: Bool, withBorder: Bool) {
         if filled {
             button.setTitleColor(theme.colours.mainColor, for: .normal)
             button.backgroundColor = theme.colours.secondaryColor
@@ -382,9 +375,11 @@ private extension TaskActionViewController {
             button.setTitleColor(theme.colours.secondaryColor, for: .normal)
             button.backgroundColor = theme.colours.mainColor
         }
+
+        button.layer.borderWidth = withBorder ? Constants.buttonBorderWidth : 0
     }
     
-    func customizeButtonFontAndShape(_ button: UIButton, mainButton: Bool = false) {
+    func customizeButtonFontAndShape(_ button: UIButton, isMainButton: Bool = false) {
         button.titleLabel?.font = theme.fonts.standard
         
         guard let lineHeight = button.titleLabel?.font.lineHeight else {
@@ -397,10 +392,9 @@ private extension TaskActionViewController {
         ])
         button.layer.cornerRadius = buttonHeight / 2
         button.layer.shadowOpacity = 0.5
-        button.layer.shadowOffset = !mainButton ? CGSize(width: 0, height: 1) : CGSize(width: 3, height: 3)
+        button.layer.shadowOffset = !isMainButton ? CGSize(width: 0, height: 1) : CGSize(width: 3, height: 3)
 
-        if mainButton { button.layer.borderWidth = Constants.buttonBorderWidth }
-        themeButton(button, false)
+        themeButton(button, filled: false, withBorder: isMainButton)
     }
 }
 
@@ -428,6 +422,44 @@ extension TaskActionViewController: PresentationObjectDelegate {
             self.clearInputs()
             self.titleLabel.text = presentationObject.titleText
             self.taskActionButton.setTitle(presentationObject.actionText, for: .normal)
+        }
+    }
+}
+
+// MARK: - Editing Model setting
+extension TaskActionViewController: EditTaskModelDelegate {
+
+    func editTaskModelDidChange(_ editTaskModel: EditTaskModel) {
+        if editTaskModel.isFilled(mode == .enter) {
+
+        }
+    }
+
+    func setTime(_ hours: Int, minutes: Int) {
+        self.editingModel.time = (hours * 60) + minutes
+        if hours == 0 {
+            guard minutes != 0 else {
+                self.themeButton(self.pickTimeButton, false)
+                return
+            }
+            self.pickTimeButton.setTitle("⌛ \(minutes)mins", for: .normal)
+        } else if minutes == 0 {
+            self.pickTimeButton.setTitle("⌛ \(hours)hrs", for: .normal)
+        } else {
+            self.pickTimeButton.setTitle("⌛ \(hours)hrs \(minutes)mins", for: .normal)
+        }
+        self.themeButton(self.pickTimeButton, true)
+    }
+
+    func setName(_ name: String?) {
+        self.editingModel.name = name
+        if let name = self.editingModel.name, !name.isEmpty {
+            self.pickNameButton.setTitle("✏️ \(name)", for: .normal)
+            self.themeButton(self.pickNameButton, true)
+        } else {
+            self.taskNameField.text = ""
+            self.pickNameButton.setTitle("✏️ Task Name", for: .normal)
+            self.themeButton(self.pickNameButton, false)
         }
     }
 }

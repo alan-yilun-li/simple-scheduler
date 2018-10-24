@@ -32,7 +32,27 @@ class LandingViewController: UIViewController {
         return dependencies.theme
     }
     
-    lazy var taskActionButton = makeButton(StringStore.getTask)
+    lazy var taskActionButton: UIButton = {
+            let button = UIButton(type: .system)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            button.setTitle(StringStore.getTask, for: .normal)
+            button.titleLabel?.font = theme.fonts.standard
+            guard let lineHeight = button.titleLabel?.font.lineHeight else {
+                assertionFailure("titlelabel of button doesn't exist")
+                return button
+            }
+            let buttonHeight = lineHeight * Constants.buttonLineHeightPercentage
+            NSLayoutConstraint.activate([
+                button.heightAnchor.constraint(equalToConstant: buttonHeight),
+                ])
+            button.layer.cornerRadius = buttonHeight / 2
+
+            button.layer.shadowOpacity = 0.5
+            button.layer.shadowOffset = CGSize(width: 3, height: 3)
+
+            return button
+        }
+    }
     
     /// Enter or get task view
     private var mainContentView: UIView!
@@ -275,30 +295,12 @@ private extension LandingViewController {
     func theme(_ button: UIButton, _ textColor: UIColor, backgroundColor: UIColor, withBorder: Bool = false) {
         if withBorder {
             button.layer.borderColor = textColor.cgColor
+            button.layer.borderWidth = Constants.buttonBorderWidth
+        } else {
+            button.layer.borderColor = nil
+            button.layer.borderWidth = 0
         }
         button.backgroundColor = backgroundColor
         button.setTitleColor(textColor, for: .normal)
-    }
-    
-    func makeButton(_ text: String) -> UIButton {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle(text, for: .normal)
-        button.titleLabel?.font = theme.fonts.standard
-        guard let lineHeight = button.titleLabel?.font.lineHeight else {
-            assertionFailure("titlelabel of button doesn't exist")
-            return button
-        }
-        let buttonHeight = lineHeight * Constants.buttonLineHeightPercentage
-        NSLayoutConstraint.activate([
-            button.heightAnchor.constraint(equalToConstant: buttonHeight),
-        ])
-        button.layer.cornerRadius = buttonHeight / 2
-        button.layer.borderWidth = Constants.buttonBorderWidth
-
-        button.layer.shadowOpacity = 0.5
-        button.layer.shadowOffset = CGSize(width: 3, height: 3)
-        
-        return button
     }
 }
