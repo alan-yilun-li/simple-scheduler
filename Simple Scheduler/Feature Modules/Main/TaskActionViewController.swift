@@ -326,8 +326,8 @@ extension TaskActionViewController {
     
     func clearInputs() {
         taskNameField.text = nil
-        themeButton(pickNameButton, false)
-        themeButton(pickTimeButton, false)
+        themeButton(pickNameButton, filled: false)
+        themeButton(pickTimeButton, filled: false)
         pickTimeButton.setTitle(presentationObject.editTimeText, for: .normal)
         pickNameButton.setTitle("✏️ Task Name", for: .normal)
         timePicker.countDownDuration = Constants.defaultExpectedTime
