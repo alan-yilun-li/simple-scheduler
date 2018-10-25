@@ -124,8 +124,10 @@ extension LandingPresenter: TaskActionDelegate {
         viewController?.showSketchPadView()
     }
     
-    func taskActionButtonPressed() {
-        
+    func taskActionTaken(withModel: EditTaskModel) {
+        let presentedVC = TaskEnterViewController()
+        presentedVC.transitioningDelegate = self
+        presentedVC.modalPresentationStyle = .custom
     }
 }
 
@@ -188,5 +190,13 @@ private extension LandingPresenter {
     func switchToEnterMode() {
         taskActionViewController.mode = .enter
         viewController?.taskActionButton.setTitle(StringStore.getTask, for: .normal)
+    }
+}
+
+// MARK: - Transitioning
+extension LandingPresenter: UIViewControllerTransitioningDelegate {
+
+    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        return presenting is TaskEnterViewController ? PopupPresentationController(presentedViewController: presented, presenting: presenting) : nil
     }
 }

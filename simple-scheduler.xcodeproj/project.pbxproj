@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		473FAF09218234E5002A49C1 /* WorkingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473FAF08218234E5002A49C1 /* WorkingViewController.swift */; };
+		473FAF0B218234FE002A49C1 /* TaskEnterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473FAF0A218234FE002A49C1 /* TaskEnterViewController.swift */; };
 		4765D3DF218112150020805D /* TaskActionPresentationObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4765D3DE218112150020805D /* TaskActionPresentationObject.swift */; };
 		4765D3E1218112400020805D /* EditTaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4765D3E0218112400020805D /* EditTaskModel.swift */; };
 		4765D3E5218112920020805D /* FriendlyTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4765D3E4218112920020805D /* FriendlyTips.swift */; };
@@ -39,6 +41,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		473FAF08218234E5002A49C1 /* WorkingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkingViewController.swift; sourceTree = "<group>"; };
+		473FAF0A218234FE002A49C1 /* TaskEnterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskEnterViewController.swift; sourceTree = "<group>"; };
 		4765D3DE218112150020805D /* TaskActionPresentationObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskActionPresentationObject.swift; sourceTree = "<group>"; };
 		4765D3E0218112400020805D /* EditTaskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTaskModel.swift; sourceTree = "<group>"; };
 		4765D3E4218112920020805D /* FriendlyTips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendlyTips.swift; sourceTree = "<group>"; };
@@ -88,6 +92,8 @@
 			children = (
 				4765D3E22181124F0020805D /* Models */,
 				E7F04C152177016F00FD6B96 /* TaskActionViewController.swift */,
+				473FAF08218234E5002A49C1 /* WorkingViewController.swift */,
+				473FAF0A218234FE002A49C1 /* TaskEnterViewController.swift */,
 			);
 			path = "Task Action";
 			sourceTree = "<group>";
@@ -347,6 +353,7 @@
 				E71675D4216949A1004BA952 /* StringStore.swift in Sources */,
 				E7F04C162177016F00FD6B96 /* TaskActionViewController.swift in Sources */,
 				E71B86F421693BA3007CB3FC /* UserDefaults+Keys.swift in Sources */,
+				473FAF0B218234FE002A49C1 /* TaskEnterViewController.swift in Sources */,
 				E7FFEB06216ABE8E001CE6AD /* LandingPresenter.swift in Sources */,
 				E7FFEB02216AB120001CE6AD /* LandingViewController.swift in Sources */,
 				4765D3E1218112400020805D /* EditTaskModel.swift in Sources */,
@@ -361,6 +368,7 @@
 				E7CA5942216E4DC8005B3ED6 /* ViewExpansionAnimator.swift in Sources */,
 				E7F04C122176EDA000FD6B96 /* Managed.swift in Sources */,
 				E7F04C0A2176E7D400FD6B96 /* TaskPlanning.xcdatamodeld in Sources */,
+				473FAF09218234E5002A49C1 /* WorkingViewController.swift in Sources */,
 				E71B86FA21693C9D007CB3FC /* AYLTheme.swift in Sources */,
 				E7F04C0C2176E9C800FD6B96 /* Task.swift in Sources */,
 				E71B86E221693A20007CB3FC /* AppDelegate.swift in Sources */,

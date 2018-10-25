@@ -16,7 +16,7 @@ protocol TaskActionDelegate: class {
     func enterDifficultyPressed()
     func enterDifficultyDoneEditing()
 
-    func taskActionButtonPressed()
+    func taskActionTaken(withModel: EditTaskModel)
 }
 
 extension TaskActionDelegate {
@@ -243,7 +243,7 @@ extension TaskActionViewController {
                 _ = Task.insert(into: context, name: self.editingModel.name!,
                                 time: Int16(clamping: self.editingModel.time!), difficulty: 0)
             }
-            // Add some kind of reward message or button
+            delegate?.taskActionTaken(withModel: editingModel)
             clearInputs()
         case .get:
             guard editingModel.isFilled(false) else {
