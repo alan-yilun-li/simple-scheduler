@@ -12,7 +12,7 @@ import Foundation
 //  Simple Scheduler
 //
 //  Created by Alan Li on 2018-10-06.
-//  Copyright © 2018 Alan Li. All rights reserved.
+//  Copyright © 2018 Alan Li. All rights res erved.
 //
 
 import UIKit
@@ -56,12 +56,10 @@ class LandingViewController: UIViewController {
     /// Enter or get task view
     private var mainContentView: UIView!
     
-    lazy var containerScrollView: UIScrollView = {
-        let scrollView = UIScrollView(frame: .zero)
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.isScrollEnabled = false
-        scrollView.contentInsetAdjustmentBehavior = .never
-        return scrollView
+    lazy var containerView: UIView = {
+        let view = UIView(frame: .zero)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     var scrollViewBottomConstraint: NSLayoutConstraint!
     
@@ -130,11 +128,6 @@ class LandingViewController: UIViewController {
         setupViews()
         setupConstraints()
     }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        containerScrollView.contentSize = view.frame.size
-    }
 }
 
 extension LandingViewController {
@@ -179,7 +172,7 @@ private extension LandingViewController {
             return
         }
         sketchPadView.translatesAutoresizingMaskIntoConstraints = false
-        containerScrollView.addSubview(sketchPadView)
+        containerView.addSubview(sketchPadView)
         
         sketchPadHeightConstraint = sketchPadView.heightAnchor.constraint(equalToConstant: 0)
         sketchPadHeightConstraint.priority = .required
@@ -203,7 +196,7 @@ private extension LandingViewController {
         addChild(presenter.taskActionViewController)
 
         mainContentView = viewForEmbedding
-        containerScrollView.addSubview(viewForEmbedding)
+        containerView.addSubview(viewForEmbedding)
         viewForEmbedding.translatesAutoresizingMaskIntoConstraints = false
         viewForEmbedding.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 999), for: .vertical)
         
@@ -230,13 +223,13 @@ private extension LandingViewController {
         view.backgroundColor = theme.colours.mainColor
         theme(taskActionButton, theme.colours.mainColor, backgroundColor: theme.colours.secondaryColor)
         
-        view.addSubview(containerScrollView)
+        view.addSubview(containerView)
         
-        containerScrollView.addSubview(taskActionButton)
-        containerScrollView.addSubview(taskStoreLabel)
-        containerScrollView.addSubview(welcomeLabel)
-        containerScrollView.addSubview(settingsButton)
-        containerScrollView.addSubview(friendlyTipButton)
+        containerView.addSubview(taskActionButton)
+        containerView.addSubview(taskStoreLabel)
+        containerView.addSubview(welcomeLabel)
+        containerView.addSubview(settingsButton)
+        containerView.addSubview(friendlyTipButton)
         
         addTaskActionController()
         addSketchPadVC()
@@ -260,18 +253,18 @@ private extension LandingViewController {
         highPriorityConstraints.forEach { $0.priority = .required }
         
         // ScrollView Constraints
-        scrollViewBottomConstraint = containerScrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        scrollViewBottomConstraint = containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
 
         NSLayoutConstraint.activate([
-            containerScrollView.topAnchor.constraint(equalTo: view.topAnchor),
-            containerScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            containerScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            containerView.topAnchor.constraint(equalTo: view.topAnchor),
+            containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            containerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollViewBottomConstraint
         ])
 
         // General Constraints
         NSLayoutConstraint.activate([
-            welcomeLabel.topAnchor.constraint(equalTo: containerScrollView.safeAreaLayoutGuide.topAnchor, constant: Constants.defaultSpacing),
+            welcomeLabel.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor, constant: Constants.defaultSpacing),
             welcomeLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing),
             welcomeLabel.trailingAnchor.constraint(lessThanOrEqualTo: settingsButton.leadingAnchor, constant: -Constants.defaultSpacing),
             
@@ -287,7 +280,7 @@ private extension LandingViewController {
 
             taskActionButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultSpacing * 2.5),
             taskActionButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultSpacing * 2.5),
-            taskActionButton.bottomAnchor.constraint(equalTo: containerScrollView.safeAreaLayoutGuide.bottomAnchor, constant: -Constants.defaultSpacing)
+            taskActionButton.bottomAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.bottomAnchor, constant: -Constants.defaultSpacing)
         ] + highPriorityConstraints)
     }
     

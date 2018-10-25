@@ -53,7 +53,13 @@ class LandingPresenter: NSObject {
     }
     
     func updateFriendlyTipButton() {
-        currentFriendlyTip = FriendlyTip.Defaults.array.randomElement()
+        var newTip = FriendlyTip.Defaults.array.randomElement()!
+        if let currentTip = currentFriendlyTip {
+            while (newTip.taskName == currentTip.taskName) {
+                newTip = FriendlyTip.Defaults.array.randomElement()!
+            }
+        }
+        currentFriendlyTip = newTip
         viewController?.friendlyTipButton.setTitle(currentFriendlyTip.motivationText, for: .normal)
     }
     

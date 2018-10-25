@@ -250,7 +250,13 @@ extension TaskActionViewController {
                 sender.shake()
                 return
             }
-            return
+            guard let givenTask = tasks.first(where: { $0.time <= Int16(clamping: editingModel.time!) }) else {
+                // no task case
+                return
+            }
+            present(UIAlertController(title: givenTask.name, message: "\(givenTask.time / 60)hrs, \(givenTask.time % 60)mins", preferredStyle: .alert), animated: true, completion: nil)
+
+            clearInputs()
         }
     }
 }
