@@ -12,11 +12,12 @@ class PopupPresentationController: UIPresentationController {
 
     var modalInsets = UIEdgeInsets(top: 30, left: 30, bottom: 30, right: 30) {
         didSet {
-            guard !alertStyle else { return }
+            guard !isAlertStyle else { return }
             self.containerView?.setNeedsLayout()
         }
     }
-    var alertStyle: Bool = false
+    var isAlertStyle: Bool = false
+    var shouldDismissOutside: Bool = true
 
     private var layoutView: UIView!
 
@@ -27,7 +28,7 @@ class PopupPresentationController: UIPresentationController {
 
     override var frameOfPresentedViewInContainerView: CGRect {
         let superFrame = containerView?.frame ?? .zero
-        if alertStyle {
+        if isAlertStyle {
             let sideLength = superFrame.width * 2/3
             return CGRect(x: ((superFrame.minX + superFrame.width) / 2) - (sideLength / 2),
                           y: ((superFrame.minY + superFrame.height) / 2) - (sideLength / 2),
@@ -49,7 +50,9 @@ class PopupPresentationController: UIPresentationController {
             self.layoutView.alpha = 1.0
         }, completion: nil)
         
-        layoutView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(outsideViewTapped)))
+        if shouldDismissOutside {
+            layoutView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(outsideViewTapped)))
+        }
         containerView?.addSubview(layoutView)
     }
 

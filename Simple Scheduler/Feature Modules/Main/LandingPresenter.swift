@@ -72,10 +72,9 @@ class LandingPresenter: NSObject {
 extension LandingPresenter {
     
     @objc func didPressSettings(_ sender: UIButton) {
-        let presentedVC = TaskEnterViewController(dependencies: dependencies)
-        presentedVC.transitioningDelegate = self
-        presentedVC.modalPresentationStyle = .custom
-        viewController?.present(presentedVC, animated: true, completion: nil)
+        let alertController = UIAlertController(title: "Hey babe!", message: "Looks like you found the settings page I've yet to build.\n\n Sorry! Was too busy thinking of what more sweet things to say to you 🤔.", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "if u press this u are a bum", style: .cancel, handler: nil))
+        viewController?.present(alertController, animated: true, completion: nil)
     }
     
     @objc func didPressTaskAction(_ sender: UIButton) {
@@ -177,6 +176,7 @@ extension LandingPresenter: NSFetchedResultsControllerDelegate {
                 }
                 i += 1
             }
+            dependencies.defaults.numberOfTasksCompleted += deletes.count
         }
         updateStoreDescription(tasks.count, dependencies.defaults.numberOfTasksCompleted)
     }
@@ -210,13 +210,14 @@ extension LandingPresenter: UIViewControllerTransitioningDelegate {
     func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         if presented is TaskEnterViewController {
             let presentationController = PopupPresentationController(presentedViewController: presented, presenting: presenting)
-            presentationController.alertStyle = true
+            presentationController.isAlertStyle = true
             return presentationController
         }
         if presented is TaskGetViewController {
             let presentationController = PopupPresentationController(presentedViewController: presented, presenting: presenting)
-            presentationController.alertStyle = false
-            presentationController.modalInsets = UIEdgeInsets(top: 90, left: 30, bottom: 400, right: 30)
+            presentationController.isAlertStyle = false
+            presentationController.modalInsets = UIEdgeInsets(top: 90, left: 30, bottom: 450, right: 30)
+            presentationController.shouldDismissOutside = false 
             return presentationController
         }
         return nil 

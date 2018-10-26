@@ -40,7 +40,7 @@ class TaskEnterViewController: UIViewController {
         let layer = CAShapeLayer()
         layer.frame = checkBoxView.bounds
         layer.path = path.cgPath
-        layer.strokeColor = theme.colours.userEnteredText.cgColor
+        layer.strokeColor = theme.colours.mainTextColor.cgColor
         layer.fillColor = nil
         layer.lineWidth = 10.0
         layer.lineJoin = .bevel
@@ -106,13 +106,14 @@ private extension TaskEnterViewController {
     func setupViews() {
         view.backgroundColor = .clear
         view.layer.cornerRadius = 30
-        view.clipsToBounds = true
-        
-        let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
-        blurEffectView.frame = self.view.bounds
-        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-
-        view.addSubview(blurEffectView)
+        view.backgroundColor = theme.colours.mainColor
+//        view.clipsToBounds = true
+//
+//        let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+//        blurEffectView.frame = self.view.bounds
+//        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//
+//        view.addSubview(blurEffectView)
         view.addSubview(descriptionLabel)
         view.addSubview(checkBoxView)
         

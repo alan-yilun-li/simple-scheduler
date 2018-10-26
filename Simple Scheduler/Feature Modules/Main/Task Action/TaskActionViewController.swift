@@ -255,7 +255,7 @@ extension TaskActionViewController {
                 sender.shake()
                 return
             }
-            guard let givenTask = tasks.first(where: { $0.time <= Int16(clamping: editingModel.time!) }) else {
+            guard let givenTask = tasks.filter({ return $0.time <= Int16(clamping: editingModel.time!) }).randomElement() else {
                 // no task case
                 return
             }
