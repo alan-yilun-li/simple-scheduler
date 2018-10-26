@@ -72,7 +72,10 @@ class LandingPresenter: NSObject {
 extension LandingPresenter {
     
     @objc func didPressSettings(_ sender: UIButton) {
-        
+        let presentedVC = TaskEnterViewController(dependencies: dependencies)
+        presentedVC.transitioningDelegate = self
+        presentedVC.modalPresentationStyle = .custom
+        viewController?.present(presentedVC, animated: true, completion: nil)
     }
     
     @objc func didPressTaskAction(_ sender: UIButton) {
@@ -124,10 +127,18 @@ extension LandingPresenter: TaskActionDelegate {
         viewController?.showSketchPadView()
     }
     
-    func taskActionTaken(withModel: EditTaskModel) {
-        let presentedVC = TaskEnterViewController()
+    func enteredTask(withModel: EditTaskModel) {
+        let presentedVC = TaskEnterViewController(dependencies: dependencies)
         presentedVC.transitioningDelegate = self
         presentedVC.modalPresentationStyle = .custom
+        viewController?.present(presentedVC, animated: true, completion: nil)
+    }
+    
+    func gotTask(_ task: Task) {
+        let presentedVC = TaskGetViewController(dependencies: dependencies, task: task)
+        presentedVC.transitioningDelegate = self
+        presentedVC.modalPresentationStyle = .custom
+        viewController?.present(presentedVC, animated: true, completion: nil)
     }
 }
 
@@ -197,6 +208,17 @@ private extension LandingPresenter {
 extension LandingPresenter: UIViewControllerTransitioningDelegate {
 
     func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
-        return presenting is TaskEnterViewController ? PopupPresentationController(presentedViewController: presented, presenting: presenting) : nil
+        if presented is TaskEnterViewController {
+            let presentationController = PopupPresentationController(presentedViewController: presented, presenting: presenting)
+            presentationController.alertStyle = true
+            return presentationController
+        }
+        if presented is TaskGetViewController {
+            let presentationController = PopupPresentationController(presentedViewController: presented, presenting: presenting)
+            presentationController.alertStyle = false
+            presentationController.modalInsets = UIEdgeInsets(top: 90, left: 30, bottom: 400, right: 30)
+            return presentationController
+        }
+        return nil 
     }
 }

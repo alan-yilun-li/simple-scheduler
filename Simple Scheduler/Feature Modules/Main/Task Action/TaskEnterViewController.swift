@@ -12,7 +12,6 @@ class TaskEnterViewController: UIViewController {
 
     private struct Constants {
         static let defaultSpacing: CGFloat = 16.0
-//        static let firstTimeCongratulationString = "Task Entered! `Get Task` to retrieve it later"
         static let congratulationStrings = ["Nice! You entered a task!",
                                             "Woohoo! Get your task back later",
                                             "Another one in the bucket",
@@ -34,16 +33,16 @@ class TaskEnterViewController: UIViewController {
 
     private lazy var checkboxPathLayer: CAShapeLayer = {
         let path = UIBezierPath()
-        path.move(to: CGPoint(x: 0, y: checkBoxView.frame.height * 2 / 3))
-        path.addLine(to: CGPoint(x: checkBoxView.frame.width / 3, y: checkBoxView.frame.height))
-        path.addLine(to: CGPoint(x: checkBoxView.frame.width, y: 0))
+        path.move(to: CGPoint(x: 0, y: checkBoxView.frame.height * 1/2))
+        path.addLine(to: CGPoint(x: checkBoxView.frame.width * 1/2, y: checkBoxView.frame.height))
+        path.addLine(to: CGPoint(x: checkBoxView.frame.width, y: 2/3))
 
         let layer = CAShapeLayer()
         layer.frame = checkBoxView.bounds
         layer.path = path.cgPath
-        layer.strokeColor = theme.colours.secondaryColor.cgColor
+        layer.strokeColor = theme.colours.userEnteredText.cgColor
         layer.fillColor = nil
-        layer.lineWidth = 2.0
+        layer.lineWidth = 10.0
         layer.lineJoin = .bevel
 
         return layer
@@ -56,6 +55,8 @@ class TaskEnterViewController: UIViewController {
         label.font = theme.fonts.small
         label.textColor = theme.colours.mainTextColor
         label.textAlignment = .center
+        label.layer.opacity = 0
+        label.numberOfLines = 0
         return label
     }()
 
@@ -64,7 +65,7 @@ class TaskEnterViewController: UIViewController {
         let key = "strokeEnd"
 
         let pathAnimation = CABasicAnimation(keyPath:key)
-        pathAnimation.duration = 1.0
+        pathAnimation.duration = 0.2
         pathAnimation.fromValue = NSNumber(floatLiteral: 0)
         pathAnimation.toValue = NSNumber(floatLiteral: 1)
 
@@ -72,6 +73,10 @@ class TaskEnterViewController: UIViewController {
         checkboxPathLayer.strokeEnd = 1.0
         checkboxPathLayer.removeAllAnimations()
         checkboxPathLayer.add(pathAnimation, forKey: key)
+        
+        UIView.animate(withDuration: 0.2) {
+            self.descriptionLabel.layer.opacity = 1.0
+        }
     }
 
     init(dependencies: AYLDependencies) {
@@ -89,29 +94,42 @@ class TaskEnterViewController: UIViewController {
         setupViews()
         setupConstraints()
     }
+    
+    @objc func viewWasPressed() {
+        dismiss(animated: true, completion: nil)
+    }
 }
 
 // MARK: - View Setup
 private extension TaskEnterViewController {
 
     func setupViews() {
-        view.backgroundColor = theme.colours.mainGrey
-        view.layer.cornerRadius = 20
+        view.backgroundColor = .clear
+        view.layer.cornerRadius = 30
+        view.clipsToBounds = true
+        
+        let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+        blurEffectView.frame = self.view.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
+        view.addSubview(blurEffectView)
         view.addSubview(descriptionLabel)
         view.addSubview(checkBoxView)
+        
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(viewWasPressed)))
     }
 
     func setupConstraints() {
         NSLayoutConstraint.activate([
-            checkBoxView.topAnchor.constraint(equalTo: view.topAnchor, constant: Constants.defaultSpacing / 2),
-            checkBoxView.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
-            checkBoxView.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor),
-            checkBoxView.bottomAnchor.constraint(equalTo: descriptionLabel.topAnchor, constant: -Constants.defaultSpacing / 2),
+            checkBoxView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            checkBoxView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            checkBoxView.widthAnchor.constraint(equalTo: view.widthAnchor).withMultiplier(0.5),
+            checkBoxView.heightAnchor.constraint(equalTo: view.heightAnchor).withMultiplier(0.5),
+            checkBoxView.bottomAnchor.constraint(lessThanOrEqualTo: descriptionLabel.topAnchor),
 
             descriptionLabel.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
             descriptionLabel.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor),
-            descriptionLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            descriptionLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Constants.defaultSpacing)
         ])
     }
 }

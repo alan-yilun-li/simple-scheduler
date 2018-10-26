@@ -28,11 +28,10 @@ class PopupPresentationController: UIPresentationController {
     override var frameOfPresentedViewInContainerView: CGRect {
         let superFrame = containerView?.frame ?? .zero
         if alertStyle {
-            let width = superFrame.width / 3
-            let height = superFrame.height / 3
-            return CGRect(x: ((superFrame.minX + superFrame.width) / 2) - (width / 2),
-                          y: ((superFrame.minY + superFrame.height) / 2) - (height / 2),
-                          width: width, height: height)
+            let sideLength = superFrame.width * 2/3
+            return CGRect(x: ((superFrame.minX + superFrame.width) / 2) - (sideLength / 2),
+                          y: ((superFrame.minY + superFrame.height) / 2) - (sideLength / 2),
+                          width: sideLength, height: sideLength)
         }
         return CGRect(x: superFrame.minX + modalInsets.left,
                       y: superFrame.minY + modalInsets.top,
@@ -43,13 +42,25 @@ class PopupPresentationController: UIPresentationController {
 
     override func presentationTransitionWillBegin() {
         layoutView = UIView()
+        layoutView.backgroundColor = UIColor(white: 0.0, alpha: 0.5)
         layoutView.frame = containerView?.frame ?? .zero
+        presentedViewController.transitionCoordinator?.animate(alongsideTransition: {
+            context in
+            self.layoutView.alpha = 1.0
+        }, completion: nil)
+        
         layoutView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(outsideViewTapped)))
         containerView?.addSubview(layoutView)
     }
 
     override func dismissalTransitionWillBegin() {
-        layoutView.removeFromSuperview()
+        presentedViewController.transitionCoordinator?.animate(alongsideTransition: {
+            context in
+            self.layoutView.alpha = 0.0
+        }, completion: {
+            context in
+            self.layoutView.removeFromSuperview()
+        })
     }
 
     override func containerViewWillLayoutSubviews() {

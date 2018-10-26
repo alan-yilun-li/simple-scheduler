@@ -26,6 +26,7 @@
 		E762E788216C783F006D1901 /* AnimationHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E762E787216C783F006D1901 /* AnimationHelpers.swift */; };
 		E77C584D216962760028D1B6 /* HitTestButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77C584C216962760028D1B6 /* HitTestButton.swift */; };
 		E77C5850216969F20028D1B6 /* CleanPushTransitionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77C584F216969F20028D1B6 /* CleanPushTransitionAnimator.swift */; };
+		E78A32572182FEF000FA94F1 /* TaskGetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78A32562182FEF000FA94F1 /* TaskGetViewController.swift */; };
 		E7CA5940216E4DBA005B3ED6 /* PopupPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7CA593F216E4DBA005B3ED6 /* PopupPresentationController.swift */; };
 		E7CA5942216E4DC8005B3ED6 /* ViewExpansionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7CA5941216E4DC8005B3ED6 /* ViewExpansionAnimator.swift */; };
 		E7CA5946216E50AA005B3ED6 /* UIButton+ViewExpansionAnimatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7CA5945216E50AA005B3ED6 /* UIButton+ViewExpansionAnimatable.swift */; };
@@ -62,6 +63,7 @@
 		E762E787216C783F006D1901 /* AnimationHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationHelpers.swift; sourceTree = "<group>"; };
 		E77C584C216962760028D1B6 /* HitTestButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HitTestButton.swift; sourceTree = "<group>"; };
 		E77C584F216969F20028D1B6 /* CleanPushTransitionAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanPushTransitionAnimator.swift; sourceTree = "<group>"; };
+		E78A32562182FEF000FA94F1 /* TaskGetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskGetViewController.swift; sourceTree = "<group>"; };
 		E7CA593F216E4DBA005B3ED6 /* PopupPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupPresentationController.swift; sourceTree = "<group>"; };
 		E7CA5941216E4DC8005B3ED6 /* ViewExpansionAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewExpansionAnimator.swift; sourceTree = "<group>"; };
 		E7CA5945216E50AA005B3ED6 /* UIButton+ViewExpansionAnimatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+ViewExpansionAnimatable.swift"; sourceTree = "<group>"; };
@@ -90,10 +92,11 @@
 		4765D3DB218111C90020805D /* Task Action */ = {
 			isa = PBXGroup;
 			children = (
+				473FAF0A218234FE002A49C1 /* TaskEnterViewController.swift */,
 				4765D3E22181124F0020805D /* Models */,
 				E7F04C152177016F00FD6B96 /* TaskActionViewController.swift */,
 				473FAF08218234E5002A49C1 /* WorkingViewController.swift */,
-				473FAF0A218234FE002A49C1 /* TaskEnterViewController.swift */,
+				E78A32562182FEF000FA94F1 /* TaskGetViewController.swift */,
 			);
 			path = "Task Action";
 			sourceTree = "<group>";
@@ -359,6 +362,7 @@
 				4765D3E1218112400020805D /* EditTaskModel.swift in Sources */,
 				E7537752217D5E0400920BED /* SketchPadViewController.swift in Sources */,
 				E71B86E421693A20007CB3FC /* OnboardingRootController.swift in Sources */,
+				E78A32572182FEF000FA94F1 /* TaskGetViewController.swift in Sources */,
 				E7FFEB04216AB87C001CE6AD /* NSLayoutConstraint+Multiplier.swift in Sources */,
 				E77C5850216969F20028D1B6 /* CleanPushTransitionAnimator.swift in Sources */,
 				4765D3DF218112150020805D /* TaskActionPresentationObject.swift in Sources */,

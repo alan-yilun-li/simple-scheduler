@@ -17,7 +17,11 @@ struct EditTaskModel {
             delegate?.editTaskModelDidChange(self)
         }
     }
-    var time: Int?
+    var time: Int? {
+        didSet {
+            delegate?.editTaskModelDidChange(self)
+        }
+    }
 
     init(name: String? = nil, time: Int? = nil, delegate: EditTaskModelDelegate? = nil) {
         self.name = name

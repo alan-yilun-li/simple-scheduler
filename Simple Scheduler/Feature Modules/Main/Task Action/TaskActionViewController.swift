@@ -16,7 +16,8 @@ protocol TaskActionDelegate: class {
     func enterDifficultyPressed()
     func enterDifficultyDoneEditing()
 
-    func taskActionTaken(withModel: EditTaskModel)
+    func enteredTask(withModel: EditTaskModel)
+    func gotTask(_ task: Task)
 }
 
 extension TaskActionDelegate {
@@ -163,6 +164,8 @@ class TaskActionViewController: UIViewController {
     init(dependencies: AYLDependencies) {
         self.dependencies = dependencies
         super.init(nibName: nil, bundle: nil)
+        
+        editingModel.delegate = self
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -239,11 +242,13 @@ extension TaskActionViewController {
                 return
             }
             let context = dependencies.persistentContainer.viewContext
+            let currentEditingModel = editingModel
+        
             context.performChanges {
-                _ = Task.insert(into: context, name: self.editingModel.name!,
-                                time: Int16(clamping: self.editingModel.time!), difficulty: 0)
+                _ = Task.insert(into: context, name: currentEditingModel.name!,
+                                time: Int16(clamping: currentEditingModel.time!), difficulty: 0)
             }
-            delegate?.taskActionTaken(withModel: editingModel)
+            delegate?.enteredTask(withModel: editingModel)
             clearInputs()
         case .get:
             guard editingModel.isFilled(false) else {
@@ -254,8 +259,7 @@ extension TaskActionViewController {
                 // no task case
                 return
             }
-            present(UIAlertController(title: givenTask.name, message: "\(givenTask.time / 60)hrs, \(givenTask.time % 60)mins", preferredStyle: .alert), animated: true, completion: nil)
-
+            delegate?.gotTask(givenTask)
             clearInputs()
         }
     }
@@ -282,9 +286,11 @@ extension TaskActionViewController {
     }
     
     func clearInputs() {
+        editingModel = EditTaskModel()
         taskNameField.text = nil
         themeButton(pickNameButton, filled: false)
         themeButton(pickTimeButton, filled: false)
+        themeButton(taskActionButton, filled: false, withBorder: true)
         pickTimeButton.setTitle(presentationObject.editTimeText, for: .normal)
         pickNameButton.setTitle("✏️ Task Name", for: .normal)
         timePicker.countDownDuration = Constants.defaultExpectedTime
@@ -387,8 +393,10 @@ extension TaskActionViewController: PresentationObjectDelegate {
 extension TaskActionViewController: EditTaskModelDelegate {
 
     func editTaskModelDidChange(_ editTaskModel: EditTaskModel) {
-        let isFilled = editTaskModel.isFilled(mode == .enter)
-        themeButton(taskActionButton, filled: isFilled, withBorder: !isFilled)
+//        let isFilled = editTaskModel.isFilled(mode == .enter)
+//        UIView.animate(withDuration: 0.2, delay: 0.1, options: .curveEaseIn, animations: {
+//            self.themeButton(self.taskActionButton, filled: isFilled, withBorder: isFilled)
+//        }, completion: nil)
     }
 
     func setTime(_ hours: Int, minutes: Int) {
